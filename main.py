@@ -1,39 +1,48 @@
 import webapp2
 
+# form = """<form  action="/testform">
+#     <label>
+#     One
+#   <input type="radio" name='q' value="one">
+#   </label>
+#
+#   <label>
+#   Two
+#   <input type="radio" name="q" value="two">
+#   </label>
+#
+#   <label>
+#   Three
+#   <input type="radio" name='q' value="three">
+#   </label>
+#   <br>
+#   <input type="submit">
+# </form>
+# """
+form = """<form  action="/testform">
+    <select name="q">
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+    </select>
+    <br>
+    <input type="submit">
+    </form>
+"""
+
 class HelloWebapp2(webapp2.RequestHandler):
     def get(self):
-        self.response.write('''<!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8" content="text/html">
-            <title>Just a page</title>
-            <style>
-            div {
-              color: red;
-              background-color: black;
-              display: inline-block;
-            }
+        # self.response.headers['Content-Type'] = 'text/plain'
+        self.response.write(form)
 
-            .but:hover {
-              color: blue;
-              background-color: yellow;
-              cursor: pointer;
-            }
-            p:hover {
-                height: 10px;
-            }
-            </style>
-          </head>
-          <body>
-            <div>
-              <p>
-                Some text
-              </p>
-              <input type='submit' class="but" name="go!" value="Vtudeeeee!">
-            </div>
-          </body>
-        </html>''')
+class TestHandler(webapp2.RequestHandler):
+    def get(self):
+        q = self.request.get('q')
+        self.response.out.write(q)
+        # self.response.headers['Content-Type'] = 'text/plain'
+        # self.response.out.write(self.request)
 
 app = webapp2.WSGIApplication([
     ('/', HelloWebapp2),
+    ('/testform', TestHandler),
 ], debug=True)
