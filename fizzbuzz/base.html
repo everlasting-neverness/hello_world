@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>FizzBuzz</title>
+      <style type="text/css">
+        ol {
+          width: 300px;
+          text-align: center;
+          background-color: green;
+          border-style: dotted;
+          border: 2px solid pink;
+          margin-left: 15px;
+          padding-left: 50px;
+        }
+      </style>
+    </head>
+    <body style="font-family: serif; color: black; font-size: 2em;">
+      <h2 style="font-weight: bolder; font-family: sans-serif; color: red; background-color: yellow;"> FizzBuzz </h2>
+      <form>
+        <label>
+          Number
+          <input type="text" name="n">
+          <br>
+          <input type="submit" value="Check">
+        </label>
+      </form>
+      {% block inside %}
+      {% endblock %}
+    </body>
+  </html>
