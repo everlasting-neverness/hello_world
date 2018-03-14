@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block inside %}
+{% for art in arts %}
+<div>
+  <div style="display: inline-block">{{art.created}}</div>
+  <div>{{art.subject}}</div>
+  <hr>
+  <div>{{art.content}}</div>
+</div>
+{% endfor %}
+{% endblock %}
