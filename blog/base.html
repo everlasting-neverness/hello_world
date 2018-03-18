@@ -10,7 +10,9 @@
       <br>
       <!-- {% block inside %}
       {% endblock %} -->
+
       {% for art in arts %}
+
       <div>
         <div style="display: inline-block; width: 50%; margin-left: 35px;">{{art.subject}}</div>
         <div style="display: inline-block; width: 40%">{{art.created}}</div>
@@ -18,7 +20,9 @@
         <div style="margin-left: 25px;">{{art.content}}</div>
         <hr style="height: 5px; background-color: black;">
       </div>
+
       {% endfor %}
+
 
       {% block new_post %}
       {% endblock %}

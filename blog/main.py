@@ -4,6 +4,12 @@ import os
 import re
 from google.appengine.ext import db
 
+def valid(something):
+    if something == '':
+        return False
+    return True
+
+
 template_dir = os.path.join(os.path.dirname(__file__), '')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
@@ -33,7 +39,7 @@ class Handler(webapp2.RequestHandler):
 class Blog(Handler):
     def render_front(self, subject='', content='', error=''):
         arts = db.GqlQuery('select * from Art order by created desc')
-        self.render('base.html', subject=subject, content=content, error=error, arts=arts)
+        self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10])
 
     def get(self):
         self.render_front()
@@ -43,11 +49,17 @@ class Blog(Handler):
 
 class NewPost(Handler):
     def render_new(self, subject='', content='', error_subject='', error_content=''):
-        # self.render('new_post.html', subject=subject, content=content, error-subject=error-subject, error-content=error-content)
-        self.render('new_post.html' % {'subject': subject,
-                                        'content': content,
-                                        'error_subject': error_subject,
-                                        'error_content': error_content})
+        self.render('new_post.html', subject=subject, content=content, error_subject=error_subject, error_content=error_content)
+        # self.render('new_post.html' % {'subject': subject,
+        #                                 'content': content,
+        #                                 'error_subject': error_subject,
+        #                                 'error_content': error_content})
+
+
+    # def render_add(self, permalink=0):
+    #     pas = Art.get_by_id(permalink)
+    #     url = 'add.html/%s' % permalink
+    #     self.render(url, pas=pas)
 
     def get(self):
         self.render_new()
@@ -55,20 +67,35 @@ class NewPost(Handler):
     def post(self):
         subject = self.request.get('subject')
         content = self.request.get('content')
-        if content and subject:
+        error_subject = ''
+        error_content = ''
+        if valid(content) and valid(subject):
             a = Art(subject = subject, content = content)
             a.put()
-            permalink = Art.key(a).id()
-
-            # self.redirect('/' + str(permalink))
-            self.redirect('/add.html/' + str(permalink), permalink)
-
-
+            # permalink = Art.key(a).id()
+            permalink = a.key().id()
+            url = str('/blog/' + str(permalink))
+            # num = 123
+            # url = str('/add/' + str(num))
+            self.redirect(url, permalink)
+            # self.render_add(permalink)
+        else:
+            if not valid(subject):
+                error_subject = "False SUBJECT input"
+            if not valid(content):
+                error_content = "False CONTENT input"
+            self.render_new(subject, content, error_subject, error_content)
 
 class Side(Handler):
+    def render_add(self, permalink=''):
+        pas = Art.get_by_id(int(permalink))
+        # url = 'add.html/%s' % permalink
+        self.render('add.html', pas=pas) #% {'permalink': permalink})
+
     def get(self, permalink):
-        pas = Art.get_by_id(permalink)
-        self.render('/add.html/', permalink, pas=pas)
+        # permalink = Art.key(a).id()
+        # pas = Art.get_by_id(permalink)
+        self.render_add(permalink)
 
         # elif not content:
         #     self.write('new_post.html' % {'subject': subject,
@@ -105,7 +132,7 @@ class Side(Handler):
 app = webapp2.WSGIApplication([
     # ('/', HelloWebapp2),
     ('/blog', Blog),
-    ('/newpost', NewPost),
-    (r'/add.html/(\d+)', Side)
+    ('/blog/newpost', NewPost),
+    (r'/blog/(\d+)', Side)
 
 ], debug=True)
