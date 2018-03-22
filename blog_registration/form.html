@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block form %}
+
+<form method="post">
+        <label> Username
+          <input type="text" name="username" value="{{username}}">
+          <div style="color:red">{{error_name}}</div>
+        </label>
+        <br>
+        <label> Password
+          <input type="password" name="password" value="{{password}}">
+          <div style="color:red">{{error_pass}}</div>
+        </label>
+        <br>
+        <label> Verify Password
+          <input type="password" name="verify" value="{{verify}}">
+          <div style="color:red">{{error_ver}}</div>
+        </label>
+        <br>
+        <label> Email (optional)
+          <input type="email" name="email" value="{{email}}">
+          <div style="color:red">{{error_mail}}</div>
+        </label>
+        <br>
+          <input type="submit">
+</form>
+
+
+
+{% endblock %}
