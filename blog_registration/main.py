@@ -93,6 +93,8 @@ class HelloWebapp2(Handler):
 
     def get(self):
         # self.response.headers['Content-Type'] = 'text/plain'
+#        logging.info('comparing methods...')
+#        logging.info(self.response.write == self.response.out.write)
         self.write_form()
 
 # class TestHandler(webapp2.RequestHandler):
@@ -107,7 +109,7 @@ class HelloWebapp2(Handler):
         error_ver=""
         error_mail=""
 
-        if valid_username(username) and valid_password(password) and valid_verify(password, verify) and valid_email(email):
+        if valid_username(username) and not user_exist(username) and valid_password(password) and valid_verify(password, verify) and valid_email(email):
             # outer['username'] = username
             password = make_pw_hash(username, password)
 
