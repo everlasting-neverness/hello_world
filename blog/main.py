@@ -75,6 +75,8 @@ class NewPost(Handler):
             # permalink = Art.key(a).id()
             permalink = a.key().id()
             url = str('/blog/' + str(permalink))
+            # num = 123
+            # url = str('/add/' + str(num))
             self.redirect(url, permalink)
             # self.render_add(permalink)
         else:
