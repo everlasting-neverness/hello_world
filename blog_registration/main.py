@@ -7,6 +7,7 @@ import os
 import re
 import cgi
 from google.appengine.ext import db
+import logging
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -16,13 +17,17 @@ def escape_html(s):
     return cgi.escape(s, quote = True)
 
 def valid_username(username):
-    check_name = db.GqlQuery('select * from UserBase')
-    for a in check_name:
-        if a.username == username:
-            return False
     if USER_RE.match(username):
         return True
     return False
+    
+def user_exist(username):
+    check_name = db.GqlQuery('select * from UserBase')
+    logging.warning(dir(db))
+    for a in check_name:
+        if a.username == username:
+            return True
+    return False        
 
 def valid_password(password):
     if PASS_RE.match(password):
@@ -117,6 +122,10 @@ class HelloWebapp2(Handler):
         else:
             if not valid_username(username):
                 error_name = "That's not a valid username."
+                password = ''
+            if user_exist(username):
+            	error_name = "That user already exists."
+            	password = ''
             if not valid_password(password) or not password:
                 error_pass = "That's not a valid password."
                 password = ''
