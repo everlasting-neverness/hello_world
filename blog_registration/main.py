@@ -20,14 +20,14 @@ def valid_username(username):
     if USER_RE.match(username):
         return True
     return False
-    
+
 def user_exist(username):
     check_name = db.GqlQuery('select * from UserBase')
-    logging.warning(dir(db))
+    # logging.warning(dir(db))
     for a in check_name:
         if a.username == username:
             return True
-    return False        
+    return False
 
 def valid_password(password):
     if PASS_RE.match(password):
@@ -61,6 +61,14 @@ def valid_pw(name, pw, h):
         return True
     return False
 
+def login_pw_verify(name, pw):
+    database = db.GqlQuery('select * from UserBase')
+    for entry in database:
+        if entry.username == name:
+            if valid_pw(name, pw, entry.password):
+                return True
+    return False
+
 
 template_dir = os.path.join(os.path.dirname(__file__), '')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
@@ -83,7 +91,6 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-outer = {}
 
 class HelloWebapp2(Handler):
     def write_form(self, error_name="", error_pass="", error_ver="", error_mail="", username='', password='', verify='', email=''):
@@ -92,7 +99,6 @@ class HelloWebapp2(Handler):
                                     verify=escape_html(verify), email=escape_html(email))
 
     def get(self):
-        # self.response.headers['Content-Type'] = 'text/plain'
 #        logging.info('comparing methods...')
 #        logging.info(self.response.write == self.response.out.write)
         self.write_form()
@@ -110,15 +116,11 @@ class HelloWebapp2(Handler):
         error_mail=""
 
         if valid_username(username) and not user_exist(username) and valid_password(password) and valid_verify(password, verify) and valid_email(email):
-            # outer['username'] = username
+
             password = make_pw_hash(username, password)
-
-
-
             base = UserBase(username = username, password = password, email = email)
             base.put()
             user = base.key().id()
-            # self.response.headers['Content-Type'] = 'text/plain'
             self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
             self.redirect("/welcome")
         else:
@@ -159,10 +161,35 @@ class ThanksHandler(Handler):
         #         out.append(a.username)
         # self.response.out.write(out)
 
+class Login(Handler):
+    def write_log_form(self, username='', password="", error=""):
+        self.render("login.html", username=escape_html(username), password=escape_html(password), error=error)
+
+    def get(self):
+        self.write_log_form()
+
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+
+        error=""
+
+        if valid_username(username) and user_exist(username) and valid_password(password) and login_pw_verify(username, password):
+            self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
+            self.redirect("/welcome")
+        else:
+            username = ""
+            password = ""
+            error = "Invalid login"
+            self.write_log_form(username, password, error)
+
+
+
 app = webapp2.WSGIApplication([
     # ('/blog', Blog),
     # ('/blog/newpost', NewPost),
     # (r'/blog/(\d+)', Side),
     ('/blog/signup', HelloWebapp2),
-    ('/welcome', ThanksHandler)
+    ('/welcome', ThanksHandler),
+    ('/login', Login)
 ], debug=True)
