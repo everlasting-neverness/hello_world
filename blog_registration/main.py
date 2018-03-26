@@ -122,7 +122,7 @@ class HelloWebapp2(Handler):
             base.put()
             user = base.key().id()
             self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
-            self.redirect("/welcome")
+            self.redirect("/blog/welcome")
         else:
             if not valid_username(username):
                 error_name = "That's not a valid username."
@@ -185,7 +185,7 @@ class Login(Handler):
 
         if valid_username(username) and user_exist(username) and valid_password(password) and login_pw_verify(username, password):
             self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
-            self.redirect("/welcome")
+            self.redirect("/blog/welcome")
         else:
             username = ""
             password = ""
@@ -213,7 +213,7 @@ app = webapp2.WSGIApplication([
     # ('/blog/newpost', NewPost),
     # (r'/blog/(\d+)', Side),
     ('/blog/signup', HelloWebapp2),
-    ('/welcome', ThanksHandler),
-    ('/login', Login),
-    ('/logout', Logout)
+    ('/blog/welcome', ThanksHandler),
+    ('/blog/login', Login),
+    ('/blog/logout', Logout)
 ], debug=True)
