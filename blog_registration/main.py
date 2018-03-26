@@ -147,13 +147,20 @@ class HelloWebapp2(Handler):
 
 class ThanksHandler(Handler):
     def get(self):
+        # logging.info()
+        # sl = [a for a in self.request.cookies]
+        # logging.info(sl)
         username = self.request.cookies.get('name')
+        if not username:
+            self.redirect("/blog/signup")
         # person = UserBase.get_by_id(int(user))
         # username = person.username
         # username = outer['username']
         # username = self.request.get('username')
         self.response.headers['Content-Type'] = 'text/html'
         self.render("welc_form.html", username=username)
+        # if Logout.get():
+        #     self.request.cookies.clear()
         # check_name = db.GqlQuery('select * from UserBase')
         # out = []
         # for a in check_name:
@@ -163,6 +170,8 @@ class ThanksHandler(Handler):
 
 class Login(Handler):
     def write_log_form(self, username='', password="", error=""):
+        # logging.info(dir(self.response.headers))
+        # logging.info(dir(self.request.cookies))
         self.render("login.html", username=escape_html(username), password=escape_html(password), error=error)
 
     def get(self):
@@ -183,7 +192,21 @@ class Login(Handler):
             error = "Invalid login"
             self.write_log_form(username, password, error)
 
+class Logout(Handler):
+    def get(self):
+        # inst = ThanksHandler(Handler)
+        # inst.request.cookies.clear()
+        # self.response.headers.pop()
+        # logging.info(dir(self.response.headers.pop('Set-Cookie')))
 
+        # c = self.request.cookies.get('name')
+        # self.response.headers.pop(c)
+        # sl = [a for a in self.response.headers]
+        # logging.info(sl)
+        # sl = [a for a in inst.request.cookies]
+        # logging.info(inst.get())
+        self.response.delete_cookie('name')
+        self.redirect("/blog/signup")
 
 app = webapp2.WSGIApplication([
     # ('/blog', Blog),
@@ -191,5 +214,6 @@ app = webapp2.WSGIApplication([
     # (r'/blog/(\d+)', Side),
     ('/blog/signup', HelloWebapp2),
     ('/welcome', ThanksHandler),
-    ('/login', Login)
+    ('/login', Login),
+    ('/logout', Logout)
 ], debug=True)
