@@ -66,7 +66,7 @@ class MainHandler(Handler):
                         else:
                             output += '@' + ' '
         # return output
-        self.render("index.html", user_input=line, output=output)
+            self.render("index.html", user_input=line, output=output)
 
 
 app = webapp2.WSGIApplication([

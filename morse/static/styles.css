@@ -2,8 +2,8 @@ body {
   color: black;
   font-size: 20px;
   font-family: sans-serif;
-  background-color: #EEEEEE
-
+  background-color: #EEEEEE;
+  background: linear-gradient(to bottom right, #EEE, #999);
 }
 
 a {
@@ -54,16 +54,20 @@ form {
   font-weight: bold;
   text-decoration: underline;
   margin-left: 70px;
+  text-shadow: 2px -2px 2px #BBB;
 }
 
 .texta {
   width: 90%;
   height: 200px;
   font-size: 25px;
+  padding: 5px;
   margin: 15px;
-  border: 2px solid grey;
+  border: 4px solid grey;
   border-radius: 10px;
   resize: none;
+  background: radial-gradient(circle farthest-corner at 30px 20px, #fff, #999);
+  box-shadow: 2px -3px 2px 1px #AAA;
 }
 
 .submit {
@@ -75,16 +79,19 @@ form {
   margin-left: 420px;
   margin-top: 30px;
   border-radius: 20px;
-  border: 1px solid grey;
+  border: 3px solid grey;
+  box-shadow: 0 -3px 2px 1px gray;
 
 }
 
 .submit:hover {
   cursor: pointer;
   font-size: 32px;
-  border: 2px solid #CCCCCC;
-  border-radius: 45px;
-  background-color: #AAAAAA;
+  color: lightcoral;
+  border: 2px solid lightcoral;
+  border-radius: 40px;
+  background-color: #444;
+  box-shadow: 0 -3px 2px 1px lightcoral;
 }
 
 
@@ -93,7 +100,7 @@ form {
   height: 670px;
   padding: 10px;
   display: inline-block;
-  font-size: 28px;
+  font-size: 30px;
   font-family: sans-serif;
   text-align: justify;
   text-indent: 1.2em;
@@ -101,7 +108,8 @@ form {
   border: 3px dotted grey;
   border-radius: 20px;
   background-color: #DDDDDD;
-
+  background: radial-gradient(circle farthest-corner at 60px 45px, #fff, #999);
+  box-shadow: 3px -2px 1px 2px #CCC, -3px 2px 1px 2px #CCC;
 }
 
 p b{
@@ -111,13 +119,13 @@ p b{
 footer {
   text-align: center;
   margin: auto;
-  width: 100%;
+  width: 99%;
   height: 60px;
   margin-top: 30px;
   background-color: #DDDDDD;
-  border-top: 2px solid #BBBBBB;
-  border-left: 2px solid #BBBBBB;
-  border-right: 2px solid #BBBBBB;
+  border-top: 4px solid #BBBBBB;
+  border-left: 4px solid #BBBBBB;
+  border-right: 4px solid #BBBBBB;
   border-radius: 5px;
 }
 
@@ -138,6 +146,7 @@ ul li{
   font-weight: bold;
   padding: 5px;
   border: 1px solid transparent;
+  text-shadow: 2px -2px 2px #BBB;
 
 }
 
@@ -147,10 +156,12 @@ ul li:hover {
   cursor: pointer;
   border-radius: 15px;
   border: 1px dotted grey;
+  box-shadow: 0 -2px 1px 1px lightcoral;
 }
 
 .version {
   display: inline-block;
   margin-top: 15px;
   font-size: 15px;
+  text-shadow: 2px -2px 1px #BBB;
 }
