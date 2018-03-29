@@ -1,0 +1,134 @@
+body {
+  color: black;
+  font-size: 20px;
+  font-family: sans-serif;
+  background-color: #EEEEEE
+
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover { color: #666666; }
+
+a:link { text-decoration: none; }
+
+a:visited { text-decoration: none; }
+
+
+
+
+
+.header {
+  width: 70%;
+  font-size: 50px;
+  text-align: center;
+  text-decoration: underline;
+  background-color: lightgrey;
+  border: 2px solid #BBBBBB;
+  border-radius: 25px;
+  margin: auto;
+  margin-bottom: 50px;
+
+}
+
+
+form {
+  width: 50%;
+  height: 50%;
+  display: inline-block;
+  float: left;
+
+}
+
+.labels {
+  font-size: 40px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-left: 70px;
+}
+
+textarea[name=user_input] {
+  /* width: 500px;
+  height: 200px; */
+  font-size: 25px;
+  /* margin: 15px; */
+  border: 2px solid grey;
+  border-radius: 10px;
+  resize: none;
+}
+
+.submit {
+  width: 150px;
+  height: 55px;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: serif;
+  margin-left: 420px;
+  margin-top: 30px;
+  border-radius: 20px;
+  border: 1px solid grey;
+
+}
+
+.submit:hover {
+  cursor: pointer;
+  font-size: 32px;
+  border: 2px solid #CCCCCC;
+  border-radius: 45px;
+  background-color: #AAAAAA;
+}
+
+
+.explain {
+  width: 45%;
+  height: 670px;
+  padding: 10px;
+  display: inline-block;
+  font-size: 30px;
+  font-family: sans-serif;
+  text-align: justify;
+  text-indent: 1.2em;
+  line-height: 1.2em;
+  border: 2px dotted grey;
+  border-radius: 20px;
+  background-color: #DDDDDD;
+
+}
+
+
+
+footer {
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  height: 50px;
+  margin-top: 30px;
+  background-color: #DDDDDD;
+  border-top: 2px solid #BBBBBB;
+  border-left: 2px solid #BBBBBB;
+  border-right: 2px solid #BBBBBB;
+  border-radius: 5px;
+}
+
+ul {
+  width: 80%;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 0px;
+  padding: 0px;
+  float: left;
+}
+
+ul li{
+  display: inline-block;
+  margin-left: 30px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.version {
+  display: inline-block;
+}

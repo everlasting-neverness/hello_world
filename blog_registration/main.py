@@ -144,29 +144,17 @@ class HelloWebapp2(Handler):
                                         error_mail, username, password,
                                         verify, email)
 
-
 class ThanksHandler(Handler):
     def get(self):
-        # logging.info()
-        # sl = [a for a in self.request.cookies]
-        # logging.info(sl)
         username = self.request.cookies.get('name')
         if not username:
             self.redirect("/blog/signup")
         # person = UserBase.get_by_id(int(user))
-        # username = person.username
-        # username = outer['username']
         # username = self.request.get('username')
         self.response.headers['Content-Type'] = 'text/html'
         self.render("welc_form.html", username=username)
         # if Logout.get():
         #     self.request.cookies.clear()
-        # check_name = db.GqlQuery('select * from UserBase')
-        # out = []
-        # for a in check_name:
-        #     if a.username == username:
-        #         out.append(a.username)
-        # self.response.out.write(out)
 
 class Login(Handler):
     def write_log_form(self, username='', password="", error=""):
@@ -198,7 +186,6 @@ class Logout(Handler):
         # inst.request.cookies.clear()
         # self.response.headers.pop()
         # logging.info(dir(self.response.headers.pop('Set-Cookie')))
-
         # c = self.request.cookies.get('name')
         # self.response.headers.pop(c)
         # sl = [a for a in self.response.headers]
