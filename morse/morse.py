@@ -22,7 +22,7 @@ class Handler(webapp2.RequestHandler):
 
 class MainHandler(Handler):
     def get(self):
-        self.render("index.html")
+        self.render("instruction.html")
 
     def post(self):
         # print "Please, enter the line in small letters or the morse code using spaces between letters (symbols)."
@@ -47,7 +47,7 @@ class MainHandler(Handler):
         #     self.render("index.html", user_input='', output='')
         line = escape_html(self.request.get("user_input"))
         if line == '':
-            self.render("index.html")
+            self.render("instruction.html")
         else:
             if line[0] == '.' or line[0] == '-':
                 form = line.split()
@@ -66,12 +66,19 @@ class MainHandler(Handler):
                         else:
                             output += '@' + ' '
         # return output
-            self.render("index.html", user_input=line, output=output)
+            self.render("instruction.html", user_input=line, output=output)
+
+class About(MainHandler):
+    def get(self):
+        self.render('about.html')
+
+class Dictionary(MainHandler):
+    def get(self):
+        self.render('dictionary.html')                    
 
 
 app = webapp2.WSGIApplication([
     ('/morse', MainHandler),
-    # ('/blog/welcome', ThanksHandler),
-    # ('/blog/login', Login),
-    # ('/blog/logout', Logout)
+    ('/morse/about', About),
+    ('/morse/dictionary', Dictionary)
 ], debug=True)

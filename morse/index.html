@@ -7,7 +7,7 @@
   </head>
   <body>
     <header><p class="header"><a href="/morse">M<span>o</span>rse enc<span>o</span>der<span>/</span>decr<span>y</span>pt<span>o</span>r</a></p></header>
-
+    <div class="form-div">
     <form method="post">
       <label class="labels">Inp<span>u</span>t ar<span>e</span>a</label>
       <br />
@@ -17,6 +17,7 @@
       <input type="radio" name="choice" value="to_morse" checked> From english to morse code -->
       <br />
       <input type="submit" class="submit" value="Submit">
+      <button type="submit" formmethod="get" formaction="/morse" class="reset">Reset</button>
       <!-- <br />
       <input type="button" name="refresh" value="Refresh" formaction="index.html" formmethod="get"> -->
       <br />
@@ -24,28 +25,31 @@
       <br />
       <textarea readonly name="output" class="texta">{{output}}</textarea>
       <br />
-
     </form>
-
+    </div>
     <br />
 
-    <div class="explain">
-      <!-- <p>Please, choose the way you want to encode your data.</p> -->
-      <p>Enter the line in small letters or the morse code using spaces between letters (symbols).</p>
-      <p>If there is s <em><u>mistake</u></em> in your line, you'll see <b>'@'</b> sign in the <b>output</b> which will mean,
-      that there are some <u>unknown</u> or <u>false-input</u> symbols in your input.</p>
-      <p>The " <b>||</b> " (double pipe) sign means the space between two words. When entering morse code by yourself
-         put this sign between the words and <u>don't forget</u> <i>spaces</i> <b>before</b> and <b>after</b> pipes!</p>
-      <p>Please do not enter <u>the morse code</u> and <u>english words</u> at the same time - <u><b>this won't get the right result</b></u>!</p>
-    </div>
+    <div class="aside">
 
+
+      {% block instruction %}
+      {% endblock %}
+
+      {% block dictionary %}
+      {% endblock %}
+
+      {% block about %}
+      {% endblock %}
+
+
+    </div>
     <footer>
     <ul>
-      <li class="english-symbols"> English symbols</li>
-      <li class="morse-symbols"> Morse code symbols</li>
-      <li class="contacts"> About</li>
+      <li><a href="/morse">Instructions</a></li>
+      <li><a href="/morse/dictionary">Dictionary</a></li>
+      <li><a href="/morse/about">About</a></li>
     </ul>
-    <div class="version">V 0.2</div>
+    <div class="version">V 0.3</div>
     </footer>
 
   </body>

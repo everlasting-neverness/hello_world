@@ -41,13 +41,22 @@ a:hover span {
   color: lightcoral;
 }
 
-form {
+.form-div {
   width: 50%;
   height: 50%;
   display: inline-block;
   float: left;
+}
+
+form {
+  /* width: auto; */
+  /* width: 50%;
+  height: 50%; */
+  /* display: inline-block;
+  float: left; */
 
 }
+
 
 .labels {
   font-size: 40px;
@@ -76,11 +85,13 @@ form {
   font-size: 30px;
   font-weight: bold;
   font-family: serif;
-  margin-left: 420px;
+  margin-left: 300px;
   margin-top: 30px;
   border-radius: 20px;
   border: 3px solid grey;
   box-shadow: 0 -3px 2px 1px gray;
+  float: left;
+  display: inline;
 
 }
 
@@ -94,8 +105,36 @@ form {
   box-shadow: 0 -3px 2px 1px lightcoral;
 }
 
+.reset {
+  width: 150px;
+  height: 55px;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: serif;
+  margin-left: 15px;
+  margin-top: 30px;
+  border-radius: 20px;
+  border: 3px solid grey;
+  box-shadow: 0 -3px 2px 1px gray;
+  display: inline;
 
-.explain {
+
+}
+
+.reset:hover {
+  cursor: pointer;
+  font-size: 32px;
+  color: lightcoral;
+  border: 2px solid lightcoral;
+  border-radius: 40px;
+  background-color: #444;
+  box-shadow: 0 -3px 2px 1px lightcoral;
+}
+
+
+
+
+.aside {
   width: 45%;
   height: 670px;
   padding: 10px;
@@ -103,18 +142,28 @@ form {
   font-size: 30px;
   font-family: sans-serif;
   text-align: justify;
-  text-indent: 1.2em;
   line-height: 1.2em;
   border: 3px dotted grey;
   border-radius: 20px;
   background-color: #DDDDDD;
   background: radial-gradient(circle farthest-corner at 60px 45px, #fff, #999);
   box-shadow: 3px -2px 1px 2px #CCC, -3px 2px 1px 2px #CCC;
+
+}
+
+.explain {
+  text-indent: 1.2em;
 }
 
 p b{
   color:red;
 }
+
+.mc-img {
+  margin-left: 40px;
+  width: 80%;
+}
+
 
 footer {
   text-align: center;
@@ -150,13 +199,20 @@ ul li{
 
 }
 
-ul li:hover {
+ul li a:hover {
   color: lightcoral;
   background-color: #333333;
   cursor: pointer;
   border-radius: 15px;
   border: 1px dotted grey;
+  text-shadow: 1px 0 1px #BBB;
   box-shadow: 0 -2px 1px 1px lightcoral;
+}
+
+#contact-mail {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: lightcoral;
 }
 
 .version {
