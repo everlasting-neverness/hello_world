@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="/static/styles.css" type="text/css" />
   </head>
   <body>
-    <header><p class="header"><a href="/morse">M<span>o</span>rse enc<span>o</span>der<span>/</span>decr<span>y</span>pt<span>o</span>r</a></p></header>
+    <header><p class="header"><a href="/morse" title="Home page">M<span>o</span>rse enc<span>o</span>der<span>/</span>decr<span>y</span>pt<span>o</span>r</a></p></header>
     <div class="form-div">
     <form method="post">
       <label class="labels">Inp<span>u</span>t ar<span>e</span>a</label>
       <br />
-      <textarea name="user_input" class="texta">{{user_input}}</textarea>
+      <textarea name="user_input" class="texta" maxlength="1000">{{user_input}}</textarea>
       <!-- <input type="radio" name="choice" value="to_eng"> From morse code to english
       <br />
       <input type="radio" name="choice" value="to_morse" checked> From english to morse code -->
@@ -49,7 +49,7 @@
       <li><a href="/morse/dictionary">Dictionary</a></li>
       <li><a href="/morse/about">About</a></li>
     </ul>
-    <div class="version">V 0.3</div>
+    <div class="version">V 0.3.1</div>
     </footer>
 
   </body>

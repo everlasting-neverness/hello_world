@@ -65,7 +65,6 @@ class MainHandler(Handler):
                             output += " || "
                         else:
                             output += '@' + ' '
-        # return output
             self.render("instruction.html", user_input=line, output=output)
 
 class About(MainHandler):
@@ -74,7 +73,7 @@ class About(MainHandler):
 
 class Dictionary(MainHandler):
     def get(self):
-        self.render('dictionary.html')                    
+        self.render('dictionary.html')
 
 
 app = webapp2.WSGIApplication([
