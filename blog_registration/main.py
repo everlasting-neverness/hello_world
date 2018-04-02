@@ -3,6 +3,7 @@ import jinja2
 import random
 import string
 import hashlib
+import hmac
 import os
 import re
 import cgi
@@ -12,6 +13,16 @@ import logging
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
 MAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
+
+secret = 'hT8s7'
+
+def make_sec_val(val):
+    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+
+def check_sec_val(sec_val):
+    val = sec_val.split('|')[0]
+    if sec_val == make_sec_val(val):
+        return val
 
 def escape_html(s):
     return cgi.escape(s, quote = True)
@@ -121,7 +132,8 @@ class HelloWebapp2(Handler):
             base = UserBase(username = username, password = password, email = email)
             base.put()
             user = base.key().id()
-            self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
+            # self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
+            self.response.headers.add_header('Set-Cookie', 'user_id=%s; Path=/' % make_sec_val(str(user)))
             self.redirect("/blog/welcome")
         else:
             if not valid_username(username):
@@ -146,13 +158,15 @@ class HelloWebapp2(Handler):
 
 class ThanksHandler(Handler):
     def get(self):
-        username = self.request.cookies.get('name')
-        if not username:
+        user_id = self.request.cookies.get('user_id')
+        if not user_id or not check_sec_val(user_id):
             self.redirect("/blog/signup")
         # person = UserBase.get_by_id(int(user))
         # username = self.request.get('username')
-        self.response.headers['Content-Type'] = 'text/html'
-        self.render("welc_form.html", username=username)
+        if user_id:
+            username = UserBase.get_by_id(int(user_id.split('|')[0]))
+            self.response.headers['Content-Type'] = 'text/html'
+            self.render("welc_form.html", username=username.username)
         # if Logout.get():
         #     self.request.cookies.clear()
 
@@ -172,7 +186,11 @@ class Login(Handler):
         error=""
 
         if valid_username(username) and user_exist(username) and valid_password(password) and login_pw_verify(username, password):
-            self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
+            # self.response.headers.add_header('Set-Cookie', 'name=%s; Path=/' % str(username))
+            # user = db.GqlQuery("select * from UserBase where username = 'username'")
+            user = UserBase.all().filter('username = ', username).get()
+            # logging.info(user.key().id())
+            self.response.headers.add_header('Set-Cookie', 'user_id=%s; Path=/' % make_sec_val(str(user.key().id())))
             self.redirect("/blog/welcome")
         else:
             username = ""
@@ -192,7 +210,8 @@ class Logout(Handler):
         # logging.info(sl)
         # sl = [a for a in inst.request.cookies]
         # logging.info(inst.get())
-        self.response.delete_cookie('name')
+        # self.response.delete_cookie('user_id')
+        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
         self.redirect("/blog/signup")
 
 app = webapp2.WSGIApplication([
