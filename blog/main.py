@@ -4,10 +4,10 @@ import os
 import re
 from google.appengine.ext import db
 
-def valid(something):
-    if something == '':
-        return False
-    return True
+# def valid(something):
+#     if something == '':
+#         return False
+#     return True
 
 
 template_dir = os.path.join(os.path.dirname(__file__), '')
@@ -69,7 +69,7 @@ class NewPost(Handler):
         content = self.request.get('content')
         error_subject = ''
         error_content = ''
-        if valid(content) and valid(subject):
+        if content and subject:
             a = Art(subject = subject, content = content)
             a.put()
             # permalink = Art.key(a).id()
@@ -80,9 +80,9 @@ class NewPost(Handler):
             self.redirect(url, permalink)
             # self.render_add(permalink)
         else:
-            if not valid(subject):
+            if not subject:
                 error_subject = "False SUBJECT input"
-            if not valid(content):
+            if not content:
                 error_content = "False CONTENT input"
             self.render_new(subject, content, error_subject, error_content)
 

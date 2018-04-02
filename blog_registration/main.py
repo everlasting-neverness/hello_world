@@ -90,6 +90,10 @@ class UserBase(db.Model):
     email = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
 
+class Art(db.Model):
+    subject = db.StringProperty(required=True)
+    content = db.TextProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -101,6 +105,52 @@ class Handler(webapp2.RequestHandler):
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+class Blog(Handler):
+    def render_front(self, subject='', content='', error=''):
+        arts = db.GqlQuery('select * from Art order by created desc')
+        self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10])
+
+    def get(self):
+        self.render_front()
+        
+
+class NewPost(Handler):
+    def render_new(self, subject='', content='', error_subject='', error_content=''):
+        self.render('new_post.html', subject=subject, content=content, error_subject=error_subject, error_content=error_content)
+
+    def get(self):
+        self.render_new()
+
+    def post(self):
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+        error_subject = ''
+        error_content = ''
+        if content and subject:
+            a = Art(subject = subject, content = content)
+            a.put()
+            # permalink = Art.key(a).id()
+            permalink = a.key().id()
+            url = str('/blog/' + str(permalink))
+            self.redirect(url, permalink)
+        else:
+            if not subject:
+                error_subject = "False SUBJECT input"
+            if not content:
+                error_content = "False CONTENT input"
+            self.render_new(subject, content, error_subject, error_content)
+
+class Side(Handler):
+    def render_add(self, permalink=''):
+        pas = Art.get_by_id(int(permalink))
+        # url = 'add.html/%s' % permalink
+        self.render('add.html', pas=pas) #% {'permalink': permalink})
+
+    def get(self, permalink):
+        # permalink = Art.key(a).id()
+        # pas = Art.get_by_id(permalink)
+        self.render_add(permalink)
 
 
 class HelloWebapp2(Handler):
@@ -215,9 +265,9 @@ class Logout(Handler):
         self.redirect("/blog/signup")
 
 app = webapp2.WSGIApplication([
-    # ('/blog', Blog),
-    # ('/blog/newpost', NewPost),
-    # (r'/blog/(\d+)', Side),
+    ('/blog', Blog),
+    ('/blog/newpost', NewPost),
+    (r'/blog/(\d+)', Side),
     ('/blog/signup', HelloWebapp2),
     ('/blog/welcome', ThanksHandler),
     ('/blog/login', Login),
