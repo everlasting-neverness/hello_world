@@ -55,7 +55,7 @@ class MainHandler(Handler):
                     if l in morse_alphab:
                         output += morse_alphab[l]
                     if l not in morse_alphab:
-                        output += '@'
+                        output += '?'
             else:
                 for letter in line:
                     if letter in eng_alphabeth:
@@ -64,7 +64,7 @@ class MainHandler(Handler):
                         if letter == " ":
                             output += " || "
                         else:
-                            output += '@' + ' '
+                            output += '?' + ' '
             self.render("instruction.html", user_input=line, output=output)
 
 class About(MainHandler):

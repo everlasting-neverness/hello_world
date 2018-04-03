@@ -32,18 +32,52 @@ a:visited { text-decoration: none; }
 
 }
 
+@keyframes letters {
+  0% {color: lightcoral;}
+  45% {color: red;}
+  90% {color: black;}
+  100% {color: lightcoral;}
+}
+
 span {
   color:red;
 
 }
 
 a:hover span {
+  animation-name: letters;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
   color: lightcoral;
 }
 
+@keyframes len {
+  0% {border: 1px dashed black;}
+  40% {border: 1px dashed lightcoral;}
+  80% {border: 1px dashed red;}
+}
+
+.logo {
+  width: 98%;
+  height: 50px;
+  margin-top: -47px;
+  position: absolute;
+}
+
+.lenta {
+  width: 400px;
+  height: 46px;
+  border: 1px solid black;
+  border-radius: 3px;
+  animation-name: len;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
 .form-div {
-  width: 50%;
-  height: 50%;
+  width: 49%;
+  height: 49%;
   display: inline-block;
   float: left;
   position: static;
@@ -70,7 +104,8 @@ form {
 .texta {
   width: 90%;
   height: 200px;
-  font-size: 25px;
+  font-size: 30px;
+  font-weight: bold;
   padding: 5px;
   margin: 15px;
   border: 4px solid grey;
@@ -78,6 +113,16 @@ form {
   resize: none;
   background: radial-gradient(circle farthest-corner at 30px 20px, #fff, #999);
   box-shadow: 2px -3px 2px 1px #AAA;
+}
+
+@keyframes subm {
+  from {box-shadow: 0 -3px 2px 1px lightcoral;}
+  to {box-shadow: 0 -2px 1px 2px red;}
+  from {color: lightcoral;}
+  to {color: red;}
+  from {border: 2px solid lightcoral;}
+  to {border: 2px solid red;}
+
 }
 
 .submit {
@@ -104,6 +149,10 @@ form {
   border-radius: 40px;
   background-color: #444;
   box-shadow: 0 -3px 2px 1px lightcoral;
+  animation-name: subm;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .reset {
@@ -130,11 +179,15 @@ form {
   border-radius: 40px;
   background-color: #444;
   box-shadow: 0 -3px 2px 1px lightcoral;
+  animation-name: subm;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .aside {
-  width: 45%;
-  height: 670px;
+  width: 44%;
+  height: 660px;
   padding: 10px;
   display: inline-block;
   font-size: 30px;
@@ -194,7 +247,7 @@ ul {
 
 ul li {
   display: inline-block;
-  margin-left: 30px;
+  margin-left: 35px;
   font-size: 25px;
   font-weight: bold;
   padding: 5px;
