@@ -53,6 +53,8 @@ a:hover span {
 }
 
 @keyframes len {
+  from {margin-left: -500px;}
+  to {margin-left: 1500px;}
   0% {border: 1px dashed black;}
   40% {border: 1px dashed lightcoral;}
   80% {border: 1px dashed red;}
@@ -71,8 +73,10 @@ a:hover span {
   border: 1px solid black;
   border-radius: 3px;
   animation-name: len;
-  animation-duration: 3s;
+  animation-duration: 16s;
+  animation-timing-function: linear;
   animation-iteration-count: infinite;
+  animation-direction: reverse;
 }
 
 .form-div {
