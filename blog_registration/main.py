@@ -9,6 +9,7 @@ import re
 import cgi
 from google.appengine.ext import db
 import logging
+import json
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -109,11 +110,20 @@ class Handler(webapp2.RequestHandler):
 class Blog(Handler):
     def render_front(self, subject='', content='', error=''):
         arts = db.GqlQuery('select * from Art order by created desc')
+        logging.info(dir(arts))
         self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10])
 
     def get(self):
         self.render_front()
-        
+
+class Blog_JSON(Handler):
+    def get(self):
+        arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        out_json = []
+        for art in arts:
+            out_json.append({"subject": art.subject, "content": art.content, "created": str(art.created)})
+        self.response.headers['Content-Type'] = "application/json; charset=UTF-8"
+        self.response.write(json.dumps(out_json))
 
 class NewPost(Handler):
     def render_new(self, subject='', content='', error_subject='', error_content=''):
@@ -152,6 +162,14 @@ class Side(Handler):
         # pas = Art.get_by_id(permalink)
         self.render_add(permalink)
 
+class PostJSON(Handler):
+    def get(self, permalink):
+        post_id = Art.get_by_id(int(permalink))
+        if post_id:
+            out_json_post = [{"subject": post_id.subject, "content": post_id.content, "created": str(post_id.created)}]
+            # out_json.append()
+            self.response.headers['Content-Type'] = "application/json; charset=UTF-8"
+            self.response.out.write(json.dumps(out_json_post))
 
 class HelloWebapp2(Handler):
     def write_form(self, error_name="", error_pass="", error_ver="", error_mail="", username='', password='', verify='', email=''):
@@ -250,24 +268,19 @@ class Login(Handler):
 
 class Logout(Handler):
     def get(self):
-        # inst = ThanksHandler(Handler)
-        # inst.request.cookies.clear()
-        # self.response.headers.pop()
-        # logging.info(dir(self.response.headers.pop('Set-Cookie')))
-        # c = self.request.cookies.get('name')
-        # self.response.headers.pop(c)
-        # sl = [a for a in self.response.headers]
-        # logging.info(sl)
-        # sl = [a for a in inst.request.cookies]
-        # logging.info(inst.get())
         # self.response.delete_cookie('user_id')
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
         self.redirect("/blog/signup")
 
+
+
+
 app = webapp2.WSGIApplication([
     ('/blog', Blog),
+    ('/blog/.json', Blog_JSON),
     ('/blog/newpost', NewPost),
     (r'/blog/(\d+)', Side),
+    (r'/blog/(\d+).json', PostJSON),
     ('/blog/signup', HelloWebapp2),
     ('/blog/welcome', ThanksHandler),
     ('/blog/login', Login),
