@@ -8,8 +8,10 @@ import os
 import re
 import cgi
 from google.appengine.ext import db
+from google.appengine.api import memcache
 import logging
 import json
+import time
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -96,6 +98,20 @@ class Art(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
 
+def top_arts(update = False):
+    key = 'top'
+    arts = memcache.get(key)
+    if arts is None or update:
+        secs = time.time()
+        memcache.set('secs', secs)
+        # logging.info((update) == (update == True))
+        arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        arts = list(arts)
+        memcache.set(key, arts)
+        logging.info('hit the db')
+    return arts
+
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -109,16 +125,32 @@ class Handler(webapp2.RequestHandler):
 
 class Blog(Handler):
     def render_front(self, subject='', content='', error=''):
-        arts = db.GqlQuery('select * from Art order by created desc')
-        logging.info(dir(arts))
-        self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10])
+        # arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        # arts = list(arts)
+        key = 'top'
+        # memcache.set(key, arts)
+        # b = memcache.get(key)
+        # logging.info(repr(n))
+        arts = top_arts()
+        # t = int(time.time())
+        # logging.info(time.clock())
+        # if not arts:
+        #     arts = ''
+        secs = memcache.get('secs')
+        logging.info(memcache.get('secs'))
+        tim = int(time.time() - secs)
+        logging.info(int(tim))
+        logging.info(arts[0].content)
+        # logging.info(b[0].content)
+        self.render('base.html', subject=subject, content=content, error=error, arts=arts, tim=tim)
 
     def get(self):
         self.render_front()
 
 class Blog_JSON(Handler):
     def get(self):
-        arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        # arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        arts = top_arts()
         out_json = []
         for art in arts:
             out_json.append({"subject": art.subject, "content": art.content, "created": str(art.created)})
@@ -143,6 +175,11 @@ class NewPost(Handler):
             # permalink = Art.key(a).id()
             permalink = a.key().id()
             url = str('/blog/' + str(permalink))
+            test = Art.get_by_id(permalink) #the very strange moment - works fine only with this call to db
+            # logging.info(test.content)
+            arts = top_arts(True)
+            logging.info(arts[0].content)
+            # top_arts(True)
             self.redirect(url, permalink)
         else:
             if not subject:
@@ -160,6 +197,8 @@ class Side(Handler):
     def get(self, permalink):
         # permalink = Art.key(a).id()
         # pas = Art.get_by_id(permalink)
+        # arts = top_arts(True)
+        # logging.info(arts[0].content)
         self.render_add(permalink)
 
 class PostJSON(Handler):
