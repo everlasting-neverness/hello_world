@@ -105,7 +105,7 @@ def top_arts(update = False):
         secs = time.time()
         memcache.set('secs', secs)
         # logging.info((update) == (update == True))
-        arts = db.GqlQuery('select * from Art order by created desc limit 10')
+        arts = db.GqlQuery('select * from Art order by created desc')
         arts = list(arts)
         memcache.set(key, arts)
         logging.info('hit the db')
@@ -142,7 +142,8 @@ class Blog(Handler):
         logging.info(int(tim))
         logging.info(arts[0].content)
         # logging.info(b[0].content)
-        self.render('base.html', subject=subject, content=content, error=error, arts=arts, tim=tim)
+        self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10], tim=tim)
+        # logging.info('after all')
 
     def get(self):
         self.render_front()
@@ -177,8 +178,12 @@ class NewPost(Handler):
             url = str('/blog/' + str(permalink))
             test = Art.get_by_id(permalink) #the very strange moment - works fine only with this call to db
             # logging.info(test.content)
+
             arts = top_arts(True)
-            logging.info(arts[0].content)
+            # load_page = time.time()
+            # memcache.set(str(permalink), load_page)
+
+            # logging.info(arts[0].content)
             # top_arts(True)
             self.redirect(url, permalink)
         else:
@@ -190,15 +195,28 @@ class NewPost(Handler):
 
 class Side(Handler):
     def render_add(self, permalink=''):
-        pas = Art.get_by_id(int(permalink))
+        # pas = Art.get_by_id(int(permalink))
+        # if it won't work in the test, should just comment it out and uncomment the upper string
+        arts = memcache.get('top')
+        # secs = memcache.get('secs')
+        if not arts:
+            arts = top_arts(True)
+        elif arts:
+            arts = list(arts)
+        for a in arts:
+            if a.get_by_id(int(permalink)):
+                pas = a
+        logging.info(type(arts[0]))
+        
+        load_page = memcache.get("cache_%s" % permalink)
+        if not load_page:
+            load_page = time.time()
+            memcache.set("cache_%s" % permalink, load_page)
+        tim = int(time.time() - load_page)
         # url = 'add.html/%s' % permalink
-        self.render('add.html', pas=pas) #% {'permalink': permalink})
+        self.render('add.html', pas=pas, tim=tim) #% {'permalink': permalink})
 
     def get(self, permalink):
-        # permalink = Art.key(a).id()
-        # pas = Art.get_by_id(permalink)
-        # arts = top_arts(True)
-        # logging.info(arts[0].content)
         self.render_add(permalink)
 
 class PostJSON(Handler):
@@ -217,11 +235,8 @@ class HelloWebapp2(Handler):
                                     verify=escape_html(verify), email=escape_html(email))
 
     def get(self):
-#        logging.info('comparing methods...')
-#        logging.info(self.response.write == self.response.out.write)
         self.write_form()
 
-# class TestHandler(webapp2.RequestHandler):
     def post(self):
         username = self.request.get('username')
         password = self.request.get('password')
