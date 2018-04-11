@@ -77,7 +77,7 @@ class Dictionary(MainHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/morse', MainHandler),
-    ('/morse/about', About),
-    ('/morse/dictionary', Dictionary)
+    ('/', MainHandler),
+    ('/about', About),
+    ('/dictionary', Dictionary)
 ], debug=True)

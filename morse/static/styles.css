@@ -17,7 +17,6 @@ a:link { text-decoration: none; }
 
 a:visited { text-decoration: none; }
 
-
 .header {
   width: 70%;
   font-size: 50px;
@@ -85,6 +84,7 @@ a:hover span {
   display: inline-block;
   float: left;
   position: static;
+  margin-right: 15px;
 }
 
 form {
@@ -117,6 +117,7 @@ form {
   resize: none;
   background: radial-gradient(circle farthest-corner at 30px 20px, #fff, #999);
   box-shadow: 2px -3px 2px 1px #AAA;
+  box-sizing: border-box;
 }
 
 @keyframes subm {
@@ -129,25 +130,33 @@ form {
 
 }
 
+.buttons {
+  width: 90%;
+  box-sizing: border-box;
+  margin-top: 25px;
+  /* padding: 20px; */
+  text-align: right;
+}
+
 .submit {
   width: 150px;
   height: 55px;
   font-size: 30px;
   font-weight: bold;
   font-family: serif;
-  margin-left: 300px;
-  margin-top: 30px;
+  /* margin-left: 300px;
+  margin-top: 30px; */
   border-radius: 20px;
   border: 3px solid grey;
   box-shadow: 0 -3px 2px 1px gray;
-  float: left;
+  /* float: left; */
   display: inline;
 
 }
 
 .submit:hover {
   cursor: pointer;
-  font-size: 32px;
+  font-size: 30px;
   color: lightcoral;
   border: 2px solid lightcoral;
   border-radius: 40px;
@@ -157,6 +166,7 @@ form {
   animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+
 }
 
 .reset {
@@ -165,19 +175,18 @@ form {
   font-size: 30px;
   font-weight: bold;
   font-family: serif;
-  margin-left: 15px;
-  margin-top: 30px;
+  /* margin-left: 15px;
+  margin-top: 30px; */
   border-radius: 20px;
   border: 3px solid grey;
   box-shadow: 0 -3px 2px 1px gray;
   display: inline;
 
-
 }
 
 .reset:hover {
   cursor: pointer;
-  font-size: 32px;
+  font-size: 30px;
   color: lightcoral;
   border: 2px solid lightcoral;
   border-radius: 40px;
@@ -190,11 +199,11 @@ form {
 }
 
 .aside {
-  width: 44%;
+  width: 48%;
   height: 660px;
   padding: 10px;
   display: inline-block;
-  font-size: 30px;
+  font-size: 25px;
   font-family: sans-serif;
   text-align: justify;
   line-height: 1.2em;
@@ -204,9 +213,12 @@ form {
   background: radial-gradient(circle farthest-corner at 60px 45px, #fff, #999);
   box-shadow: 3px -2px 1px 2px #CCC, -3px 2px 1px 2px #CCC;
   position: static;
+  box-sizing: border-box;
+
 }
 
 .explain {
+  /* width: auto; */
   text-indent: 1.2em;
 }
 
@@ -216,14 +228,14 @@ p b{
 
 .mc-div {
   margin-top: 20px;
-  margin-left: 40px;
-  width: auto;
-  height: inherit;
+  /* margin-left: 20px; */
+  width: 90%;
+  height: 660px;
   text-align: center;
 }
 
 .mc-img {
-  width: 60%;
+  width: auto;
 }
 
 footer {
@@ -231,7 +243,7 @@ footer {
   margin: auto;
   width: 99%;
   height: 60px;
-  margin-top: 30px;
+  margin-top: 60px;
   background-color: #DDDDDD;
   border-top: 4px solid #BBBBBB;
   border-left: 4px solid #BBBBBB;
