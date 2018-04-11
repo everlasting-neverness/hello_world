@@ -352,8 +352,11 @@ class Logout(Handler):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
         self.redirect("/blog/signup")
 
-
-
+class Flush(Handler):
+    def get(self):
+        del_page_time_cache()
+        memcache.flush_all()
+        self.redirect("/blog")
 
 app = webapp2.WSGIApplication([
     ('/blog', Blog),
@@ -364,5 +367,6 @@ app = webapp2.WSGIApplication([
     ('/blog/signup', HelloWebapp2),
     ('/blog/welcome', ThanksHandler),
     ('/blog/login', Login),
-    ('/blog/logout', Logout)
+    ('/blog/logout', Logout),
+    ('/blog/flush', Flush)
 ], debug=True)
