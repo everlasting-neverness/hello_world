@@ -111,6 +111,23 @@ def top_arts(update = False):
         logging.info('hit the db')
     return arts
 
+def get_from_cache(permalink):
+    arts = memcache.get('top')
+    # secs = memcache.get('secs')
+    if not arts:
+        arts = top_arts(True)
+    elif arts:
+        arts = list(arts)
+    for a in arts:
+        if a.get_by_id(int(permalink)):
+            pas = a
+            break
+    return pas
+
+def del_page_time_cache():
+    if memcache.get("load_page_cache"):
+        # logging.info('hit the cache page')
+        memcache.delete("load_page_cache")
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -127,7 +144,7 @@ class Blog(Handler):
     def render_front(self, subject='', content='', error=''):
         # arts = db.GqlQuery('select * from Art order by created desc limit 10')
         # arts = list(arts)
-        key = 'top'
+        # key = 'top'
         # memcache.set(key, arts)
         # b = memcache.get(key)
         # logging.info(repr(n))
@@ -136,11 +153,12 @@ class Blog(Handler):
         # logging.info(time.clock())
         # if not arts:
         #     arts = ''
+        del_page_time_cache()
         secs = memcache.get('secs')
         logging.info(memcache.get('secs'))
         tim = int(time.time() - secs)
         logging.info(int(tim))
-        logging.info(arts[0].content)
+        # logging.info(arts[0].content)
         # logging.info(b[0].content)
         self.render('base.html', subject=subject, content=content, error=error, arts=arts[:10], tim=tim)
         # logging.info('after all')
@@ -152,6 +170,7 @@ class Blog_JSON(Handler):
     def get(self):
         # arts = db.GqlQuery('select * from Art order by created desc limit 10')
         arts = top_arts()
+        del_page_time_cache()
         out_json = []
         for art in arts:
             out_json.append({"subject": art.subject, "content": art.content, "created": str(art.created)})
@@ -160,6 +179,7 @@ class Blog_JSON(Handler):
 
 class NewPost(Handler):
     def render_new(self, subject='', content='', error_subject='', error_content=''):
+        del_page_time_cache()
         self.render('new_post.html', subject=subject, content=content, error_subject=error_subject, error_content=error_content)
 
     def get(self):
@@ -197,31 +217,33 @@ class Side(Handler):
     def render_add(self, permalink=''):
         # pas = Art.get_by_id(int(permalink))
         # if it won't work in the test, should just comment it out and uncomment the upper string
-        arts = memcache.get('top')
-        # secs = memcache.get('secs')
-        if not arts:
-            arts = top_arts(True)
-        elif arts:
-            arts = list(arts)
-        for a in arts:
-            if a.get_by_id(int(permalink)):
-                pas = a
-        logging.info(type(arts[0]))
-        
-        load_page = memcache.get("cache_%s" % permalink)
+        # arts = memcache.get('top')
+        # # secs = memcache.get('secs')
+        # if not arts:
+        #     arts = top_arts(True)
+        # elif arts:
+        #     arts = list(arts)
+        # for a in arts:
+        #     if a.get_by_id(int(permalink)):
+        #         pas = a
+        # logging.info(type(arts[0]))
+        pas = get_from_cache(permalink)
+        # logging.info('%s, %s' % (pas.content, pas.subject))
+        load_page = memcache.get("load_page_cache")
         if not load_page:
             load_page = time.time()
-            memcache.set("cache_%s" % permalink, load_page)
+            memcache.set("load_page_cache", load_page)
         tim = int(time.time() - load_page)
         # url = 'add.html/%s' % permalink
         self.render('add.html', pas=pas, tim=tim) #% {'permalink': permalink})
 
     def get(self, permalink):
+        # logging.info(permalink)
         self.render_add(permalink)
 
 class PostJSON(Handler):
     def get(self, permalink):
-        post_id = Art.get_by_id(int(permalink))
+        post_id = get_from_cache(permalink)
         if post_id:
             out_json_post = [{"subject": post_id.subject, "content": post_id.content, "created": str(post_id.created)}]
             # out_json.append()
@@ -230,6 +252,7 @@ class PostJSON(Handler):
 
 class HelloWebapp2(Handler):
     def write_form(self, error_name="", error_pass="", error_ver="", error_mail="", username='', password='', verify='', email=''):
+        del_page_time_cache()
         self.render("form.html", error_name=escape_html(error_name), error_pass=escape_html(error_pass), error_ver=escape_html(error_ver),
                                     error_mail=escape_html(error_mail), username=escape_html(username), password=escape_html(password),
                                     verify=escape_html(verify), email=escape_html(email))
@@ -280,6 +303,7 @@ class HelloWebapp2(Handler):
 
 class ThanksHandler(Handler):
     def get(self):
+        del_page_time_cache()
         user_id = self.request.cookies.get('user_id')
         if not user_id or not check_sec_val(user_id):
             self.redirect("/blog/signup")
@@ -294,6 +318,7 @@ class ThanksHandler(Handler):
 
 class Login(Handler):
     def write_log_form(self, username='', password="", error=""):
+        del_page_time_cache()
         # logging.info(dir(self.response.headers))
         # logging.info(dir(self.request.cookies))
         self.render("login.html", username=escape_html(username), password=escape_html(password), error=error)
@@ -322,6 +347,7 @@ class Login(Handler):
 
 class Logout(Handler):
     def get(self):
+        del_page_time_cache()
         # self.response.delete_cookie('user_id')
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
         self.redirect("/blog/signup")
