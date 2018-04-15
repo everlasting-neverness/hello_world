@@ -354,7 +354,7 @@ class Logout(Handler):
 
 class Flush(Handler):
     def get(self):
-        del_page_time_cache()
+        # del_page_time_cache()
         memcache.flush_all()
         self.redirect("/blog")
 

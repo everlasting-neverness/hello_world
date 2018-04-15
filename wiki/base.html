@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>UdaWiki</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <!-- <header>
+      <div>
+        <div>Edit</div>
+        <div>Viev</div>
+        <div>History</div>
+      </div>
+      <div>
+        <div>Login</div>
+        <div>Logout</div>
+      </div>
+    </header> -->
+
+    <div>
+      {% block edit %}
+      {% endblock %}
+
+      {% block registration %}
+      {% endblock %}
+
+      {% block login %}
+      {% endblock %}
+
+      {% block wikipage %}
+      {% endblock %}
+
+    </div>
+  </body>
+  </html>

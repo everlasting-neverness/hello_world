@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block edit %}
+
+<div>
+  <form method="post">
+    <p>
+      <textarea name="user_post">{{ page.content|safe }}</textarea>
+    </p>
+    <button type="submit">Save</button>
+  </form>
+</div>
+
+{% endblock %}
