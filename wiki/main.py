@@ -122,7 +122,14 @@ def get_from_cache(page):
             break
     return pas
 
+def cookie_for_button(user_id):
+    if not user_id or not check_sec_val(user_id):
+        cookie_buttons = {'edit': '', "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
 
+    else:
+        user = Users.get_by_id(int(user_id.split('|')[0]))
+        cookie_buttons = {'edit': 'edit', "history": "history", "login": '', 'signup': '', 'username': user.username}
+    return cookie_buttons
 
 
 class Handler(webapp2.RequestHandler):
@@ -139,9 +146,11 @@ class Handler(webapp2.RequestHandler):
 class MainPage(Handler):
     # def render_front_page(self):
     #     self.render("base.html")
-    def render_front_page(self, page = None):
+    def render_front_page(self, page = None, buttons = None):
+        user_id = self.request.cookies.get('user_id')
+        buttons = cookie_for_button(user_id)
         page = get_from_cache("main")
-        self.render("wikipage.html", page = page)
+        self.render("wikipage.html", page = page, buttons = buttons)
 
 
     def get(self):
@@ -230,9 +239,10 @@ class Login(Handler):
 
 
 class EditPage(Handler):
-    def render_edit_page(self, page = None):
-
-        self.render("edit.html", page=page)
+    def render_edit_page(self, page = None, buttons = None):
+        user_id = self.request.cookies.get('user_id')
+        buttons = cookie_for_button(user_id)
+        self.render("edit.html", page=page, buttons = buttons)
 
     def get(self):
         url_page = page_from_url(self.request.url)
@@ -285,9 +295,11 @@ def page_from_url(url):
     return "".join(url.split('/')[-1])
 
 class WikiPage(Handler):
-    def render_wiki_page(self, page = None):
+    def render_wiki_page(self, page = None, buttons = None):
+        user_id = self.request.cookies.get('user_id')
+        buttons = cookie_for_button(user_id)
         self.response.headers['Content-Type'] = "text/html"
-        self.render('wikipage.html', page=page)
+        self.render('wikipage.html', page=page, buttons = buttons)
 
     def get(self):
         url_page = page_from_url(self.request.url)
@@ -301,7 +313,8 @@ class WikiPage(Handler):
             user_id = self.request.cookies.get('user_id')
             if not user_id or not check_sec_val(user_id):
                 if page:
-                    self.redirect("/" + url_page)
+                    # self.redirect("/" + url_page)
+                    self.render_wiki_page(page)
                 else:
                     self.error(404)
                     return

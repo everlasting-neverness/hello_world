@@ -5,26 +5,21 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <!-- <header>
+    <nav>
       <div>
-        <div>Edit</div>
-        <div>Viev</div>
-        <div>History</div>
+        <a href="">{{buttons['edit']}}</a>
+        <!-- <span>Viev</span> -->
+        <span>{{buttons['history']}}</span>
       </div>
       <div>
-        <div>Login</div>
-        <div>Logout</div>
+        <a href="/login">{{buttons['login']}}</a>
+        <a href="/signup">{{buttons['signup']}}</a>
+        <a href="/logout">{{buttons['username']}}</a>
       </div>
-    </header> -->
+    </nav>
 
     <div>
       {% block edit %}
-      {% endblock %}
-
-      {% block registration %}
-      {% endblock %}
-
-      {% block login %}
       {% endblock %}
 
       {% block wikipage %}

@@ -1,24 +1,29 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>UdaWiki</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
 
-{% block login %}
+    <div>
+      <h1>Login</h1>
+      <form method="post">
+        <p>
+        <label> Username
+          <input type="text" name="username">
+        </label>
+        </p>
+        <p>
+        <label> Password
+          <input type="password" name="password">
+        </label>
+        </p>
+        <div style="color: red;">{{error}}</div>
+        <br>
+        <input type="submit">
 
-<h1>Login</h1>
-<form method="post">
-  <p>
-  <label> Username
-    <input type="text" name="username">
-  </label>
-  </p>
-  <p>
-  <label> Password
-    <input type="password" name="password">
-  </label>
-  </p>
-  <div style="color: red;">{{error}}</div>
-  <br>
-  <input type="submit">
-
-</form>
-
-
-{% endblock %}
+      </form>
+    </div>
+  </body>
+  </html>
