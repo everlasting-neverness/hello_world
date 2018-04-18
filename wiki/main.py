@@ -9,6 +9,7 @@ import hashlib
 import random
 import json
 import string
+import json
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
@@ -146,6 +147,19 @@ class MainPage(Handler):
     def get(self):
         self.render_front_page()
 
+class MainPageJSON(Handler):
+    def get(self):
+        # posts = top_posts()
+        # out_json = []
+        # for post in posts:
+        #     out_json.append({"post_name": post.post_name, "content": post.content, "created": str(post.created)})
+        url_page = 'main'
+        page = get_from_cache(url_page)
+        out_json = []
+        out_json.append({"post_name": page.post_name, "content": page.content, "created": str(page.created)})
+        self.response.headers['Content-Type'] = "application/json; charset=UTF-8"
+        self.response.write(json.dumps(out_json))
+
 class Signup(Handler):
     def render_sup(self, **params):
         # yet leave this without errors
@@ -258,12 +272,13 @@ class EditPage(Handler):
             if permalink == "main":
                 permalink = ""
             posts = top_posts(True)
+            logging.info('hit post content')
             # permalink = posts[0].post_name
             # logging.info(posts[0].content)
             self.redirect("/" + permalink)
         # in case
-        # else:
-        #     self.redirect("/")
+        else:
+            self.redirect("/")
 
 
 def page_from_url(url):
@@ -294,6 +309,16 @@ class WikiPage(Handler):
             # logging.info('right')
             self.redirect('/_edit/' + url_page)
 
+class WikiPageJSON(Handler):
+    def get(self):
+        url_page = page_from_url(self.request.url)
+        page = get_from_cache(url_page.split('.')[0])
+        # logging.info(url_page)
+        if page:
+            out_json_post = [{"post_name": page.post_name, "content": page.content, "created": str(page.created)}]
+            self.response.headers['Content-Type'] = "application/json; charset=UTF-8"
+            self.response.out.write(json.dumps(out_json_post))
+
 
 class Logout(Handler):
     def get(self):
@@ -307,11 +332,11 @@ PAGE_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/.json', MainPageJSON),
     ('/signup', Signup),
     ('/login', Login),
     ('/logout', Logout),
-    # ('/_edit/' + PAGE_RE, EditPage),
-    # ('/' + PAGE_RE, WikiPage)
+    (r'^/[a-zA-Z0-9_-]{3,20}.json$', WikiPageJSON),
     ('/_edit/', EditPage),
     (r'^/_edit/[a-zA-Z0-9_-]{3,20}$', EditPage),
     (r'^/[a-zA-Z0-9_-]{3,20}$', WikiPage)
