@@ -122,14 +122,20 @@ def get_from_cache(page):
             break
     return pas
 
-def cookie_for_button(user_id):
+def cookie_for_button(user_id, url_for_edit = ''):
     if not user_id or not check_sec_val(user_id):
-        cookie_buttons = {'edit': '', "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
+        cookie_buttons = {'edit': '','url_for_edit': '', "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
 
     else:
         user = Users.get_by_id(int(user_id.split('|')[0]))
-        cookie_buttons = {'edit': 'edit', "history": "history", "login": '', 'signup': '', 'username': user.username}
+        cookie_buttons = {'edit': 'edit', 'url_for_edit': url_for_edit, "history": "history", "login": '', 'signup': '', 'username': user.username}
     return cookie_buttons
+
+def edit_url(url):
+    make = url.split('/')
+    make.insert(-1, '_edit')
+    url = '/'.join(make)
+    return url
 
 
 class Handler(webapp2.RequestHandler):
@@ -147,8 +153,9 @@ class MainPage(Handler):
     # def render_front_page(self):
     #     self.render("base.html")
     def render_front_page(self, page = None, buttons = None):
+        url_for_edit = edit_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id)
+        buttons = cookie_for_button(user_id, url_for_edit)
         page = get_from_cache("main")
         self.render("wikipage.html", page = page, buttons = buttons)
 
@@ -295,9 +302,10 @@ def page_from_url(url):
     return "".join(url.split('/')[-1])
 
 class WikiPage(Handler):
-    def render_wiki_page(self, page = None, buttons = None):
+    def render_wiki_page(self, page = None, buttons = None, url_for_edit = None):
+        url_for_edit = edit_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id)
+        buttons = cookie_for_button(user_id, url_for_edit)
         self.response.headers['Content-Type'] = "text/html"
         self.render('wikipage.html', page=page, buttons = buttons)
 
@@ -341,7 +349,7 @@ class Logout(Handler):
         self.redirect("/")
 
 
-PAGE_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+PAGE_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
@@ -352,6 +360,7 @@ app = webapp2.WSGIApplication([
     (r'^/[a-zA-Z0-9_-]{3,20}.json$', WikiPageJSON),
     ('/_edit/', EditPage),
     (r'^/_edit/[a-zA-Z0-9_-]{3,20}$', EditPage),
-    (r'^/[a-zA-Z0-9_-]{3,20}$', WikiPage)
+    (r'^/[a-zA-Z0-9_-]{3,20}$', WikiPage),
+    (r'^/_history/[a-zA-Z0-9_-]{3,20}$', HistoryPage)
     # this regular expression is ? because of / inside it
 ], debug=True)

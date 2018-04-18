@@ -5,16 +5,16 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <nav>
+    <nav style="font-size: 20px;">
       <div>
-        <a href="">{{buttons['edit']}}</a>
+        <a style="display: inline-block;" href="{{buttons['url_for_edit']}}">{{buttons['edit']}}</a>
         <!-- <span>Viev</span> -->
-        <span>{{buttons['history']}}</span>
+        <span style="display: inline-block;">{{buttons['history']}}</span>
       </div>
       <div>
-        <a href="/login">{{buttons['login']}}</a>
-        <a href="/signup">{{buttons['signup']}}</a>
-        <a href="/logout">{{buttons['username']}}</a>
+        <a style="display: inline-block;" href="/login">{{buttons['login']}}</a>
+        <a style="display: inline-block;" href="/signup">{{buttons['signup']}}</a>
+        <a style="display: inline-block;" href="/logout">{{buttons['username']}}</a>
       </div>
     </nav>
 
