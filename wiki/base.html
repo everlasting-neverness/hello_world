@@ -4,14 +4,13 @@
     <title>UdaWiki</title>
     <meta charset="utf-8">
   </head>
-  <body>
-    <nav style="font-size: 20px;">
-      <div>
+  <body style="font-size: 30px;">
+    <nav style="font-size: 20px; margin-right: 50px;">
+      <div style="text-align: right;">
         <a style="display: inline-block;" href="{{buttons['url_for_edit']}}">{{buttons['edit']}}</a>
         <!-- <span>Viev</span> -->
-        <span style="display: inline-block;">{{buttons['history']}}</span>
-      </div>
-      <div>
+        <a style="display: inline-block;" href="{{buttons['url_for_history']}}">{{buttons['history']}}</a>
+
         <a style="display: inline-block;" href="/login">{{buttons['login']}}</a>
         <a style="display: inline-block;" href="/signup">{{buttons['signup']}}</a>
         <a style="display: inline-block;" href="/logout">{{buttons['username']}}</a>
@@ -23,6 +22,9 @@
       {% endblock %}
 
       {% block wikipage %}
+      {% endblock %}
+
+      {% block history %}
       {% endblock %}
 
     </div>

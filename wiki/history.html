@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block history %}
+
+<div>
+  {% for page in pages %}
+  <div style="float: left; width: 30%;">{{page.created}}</div>
+  <div>{{page.content}}</div>
+  {% endfor %}
+</div>
+
+{% endblock %}

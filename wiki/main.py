@@ -96,6 +96,9 @@ class Posts(db.Model):
     post_name = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
+    v = db.IntegerProperty(required=True)
+
+
 
 def top_posts(update = False):
     key = 'top'
@@ -122,21 +125,46 @@ def get_from_cache(page):
             break
     return pas
 
-def cookie_for_button(user_id, url_for_edit = ''):
+def history_from_cache(page):
+    posts = memcache.get('top')
+    if not posts:
+        posts = top_posts(True)
+    elif posts:
+        posts = list(posts)
+    # pas = None
+    # for a in posts:
+    #     if a.post_name == page:
+    #         pas = a
+    #         break
+    pas = [a for a in posts if a.post_name == page]
+    return pas
+
+def cookie_for_button(user_id, url_for_edit = '', url_for_history = ''):
     if not user_id or not check_sec_val(user_id):
-        cookie_buttons = {'edit': '','url_for_edit': '', "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
+        cookie_buttons = {'edit': '','url_for_edit': '',"url_for_history": url_for_history, "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
 
     else:
         user = Users.get_by_id(int(user_id.split('|')[0]))
-        cookie_buttons = {'edit': 'edit', 'url_for_edit': url_for_edit, "history": "history", "login": '', 'signup': '', 'username': user.username}
+        cookie_buttons = {'edit': 'edit', 'url_for_edit': url_for_edit, "url_for_history": url_for_history, "history": "history", "login": '', 'signup': '', 'username': user.username}
     return cookie_buttons
 
 def edit_url(url):
     make = url.split('/')
-    make.insert(-1, '_edit')
+    if '_history' in make:
+        make.remove('_history')
+    if '_edit' not in make:
+        make.insert(-1, '_edit')
     url = '/'.join(make)
     return url
 
+def history_url(url):
+    make = url.split('/')
+    if '_edit' in make:
+        make.remove('_edit')
+    if '_history' not in make:
+        make.insert(-1, '_history')
+    url = '/'.join(make)
+    return url
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -154,8 +182,10 @@ class MainPage(Handler):
     #     self.render("base.html")
     def render_front_page(self, page = None, buttons = None):
         url_for_edit = edit_url(self.request.url)
+        url_for_history = history_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id, url_for_edit)
+        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+        # logging.info(buttons)
         page = get_from_cache("main")
         self.render("wikipage.html", page = page, buttons = buttons)
 
@@ -248,7 +278,9 @@ class Login(Handler):
 class EditPage(Handler):
     def render_edit_page(self, page = None, buttons = None):
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id)
+        url_for_history = history_url(self.request.url)
+        url_for_edit = ''
+        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
         self.render("edit.html", page=page, buttons = buttons)
 
     def get(self):
@@ -281,7 +313,12 @@ class EditPage(Handler):
         content = self.request.get("user_post")
         if content:
             # logging.info(content)
-            post = Posts(post_name = post_name, content = content)
+            post = get_from_cache(post_name)
+            logging.info(post)
+            if not post:
+                post = Posts(post_name = post_name, content = content, v = 1)
+            elif post:
+                post = Posts(post_name = post_name, content = content, v = post.v + 1 )
             post.put()
             a = post.key().id()
             test = Posts.get_by_id(a)
@@ -302,10 +339,11 @@ def page_from_url(url):
     return "".join(url.split('/')[-1])
 
 class WikiPage(Handler):
-    def render_wiki_page(self, page = None, buttons = None, url_for_edit = None):
+    def render_wiki_page(self, page = None, buttons = None):
         url_for_edit = edit_url(self.request.url)
+        url_for_history = history_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id, url_for_edit)
+        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
         self.response.headers['Content-Type'] = "text/html"
         self.render('wikipage.html', page=page, buttons = buttons)
 
@@ -340,6 +378,29 @@ class WikiPageJSON(Handler):
             self.response.headers['Content-Type'] = "application/json; charset=UTF-8"
             self.response.out.write(json.dumps(out_json_post))
 
+class HistoryPage(Handler):
+    def render_wanted_page(self, pages = None, buttons = None):
+        # logging.info('yes')
+        url_page = page_from_url(self.request.url)
+        if url_page == '':
+            url_page = "main"
+        pages = history_from_cache(url_page)
+        url_for_edit = edit_url(self.request.url)
+        url_for_history = history_url(self.request.url)
+        user_id = self.request.cookies.get('user_id')
+        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+        if pages:
+            self.render('history.html', pages = pages, buttons = buttons)
+        else:
+            self.error(404)
+            return
+            # self.render('history.html')
+
+    def get(self):
+        self.render_wanted_page()
+
+
+
 
 class Logout(Handler):
     def get(self):
@@ -357,10 +418,10 @@ app = webapp2.WSGIApplication([
     ('/signup', Signup),
     ('/login', Login),
     ('/logout', Logout),
-    (r'^/[a-zA-Z0-9_-]{3,20}.json$', WikiPageJSON),
+    (r'/(?:[a-zA-Z0-9_-]+/?)*.json$', WikiPageJSON),
     ('/_edit/', EditPage),
-    (r'^/_edit/[a-zA-Z0-9_-]{3,20}$', EditPage),
+    (r'/_edit/(?:[a-zA-Z0-9_-]+/?)*', EditPage),
     (r'^/[a-zA-Z0-9_-]{3,20}$', WikiPage),
-    (r'^/_history/[a-zA-Z0-9_-]{3,20}$', HistoryPage)
+    (r'/_history/(?:[a-zA-Z0-9_-]+/?)*', HistoryPage)
     # this regular expression is ? because of / inside it
 ], debug=True)
