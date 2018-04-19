@@ -125,6 +125,23 @@ def get_from_cache(page):
             break
     return pas
 
+def get_ver_from_cache(page, ver):
+    # logging.info('page, ver = %s, %s' % (page, ver))
+    posts = memcache.get('top')
+    if not posts:
+        posts = top_posts(True)
+    elif posts:
+        posts = list(posts)
+    pas = None
+    for a in posts:
+        # logging.info('in the get form cache')
+        # logging.info((a.v, a.post_name))
+        if a.post_name == page and a.v == ver:
+            pas = a
+            # logging.info('got the page')
+            break
+    return pas
+
 def history_from_cache(page):
     posts = memcache.get('top')
     if not posts:
@@ -137,6 +154,7 @@ def history_from_cache(page):
     #         pas = a
     #         break
     pas = [a for a in posts if a.post_name == page]
+    # logging.info(type(pas[0].v))
     return pas
 
 def cookie_for_button(user_id, url_for_edit = '', url_for_history = ''):
@@ -149,6 +167,9 @@ def cookie_for_button(user_id, url_for_edit = '', url_for_history = ''):
     return cookie_buttons
 
 def edit_url(url):
+    # point = url.find('?v=')
+    # if point:
+    #     url = url[:point]
     make = url.split('/')
     if '_history' in make:
         make.remove('_history')
@@ -158,6 +179,9 @@ def edit_url(url):
     return url
 
 def history_url(url):
+    # point = url.find('?v=')
+    # if point:
+    #     url = url[:point]
     make = url.split('/')
     if '_edit' in make:
         make.remove('_edit')
@@ -274,7 +298,6 @@ class Login(Handler):
             params = dict(username = "", password = "", error = "Invalid login")
             self.render_login(**params)
 
-
 class EditPage(Handler):
     def render_edit_page(self, page = None, buttons = None):
         user_id = self.request.cookies.get('user_id')
@@ -345,14 +368,18 @@ class WikiPage(Handler):
         user_id = self.request.cookies.get('user_id')
         buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
         self.response.headers['Content-Type'] = "text/html"
+        self.response.headers['Location'] = self.request.url
         self.render('wikipage.html', page=page, buttons = buttons)
 
     def get(self):
         url_page = page_from_url(self.request.url)
-        # logging.info(self.request.url)
-        # if not url_page:
-            # need to gigure out how to meke the main page editable
-        page = get_from_cache(url_page)
+        if '?v=' in url_page:
+            ver = int(url_page.split('?v=')[-1])
+            url_page = url_page.split('?v=')[0]
+            page = get_ver_from_cache(url_page, ver)
+            # logging.info(page)
+        else:
+            page = get_from_cache(url_page)
         if page:
             self.render_wiki_page(page)
         else:
