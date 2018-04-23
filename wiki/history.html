@@ -4,8 +4,12 @@
 
 <div class="history-content">
   {% for page in pages %}
-  <div class='history-content-div' style="float: left; width: 30%;">{{page.created}}</div>
+  <div class='history-created-div'>{{page.created}}</div>
   <div class='history-content-div'>{{page.content}}</div>
+  <div class="history-button-viev"><a href="{{'/' + page.post_name + '?v=%s' % page.v}}">viev</a></div>
+  <div class="history-button-edit" ><a href="{{'/' + "_edit/" + page.post_name + '?v=%s' % page.v}}">edit</a></div>
+  <hr>
+  <br>
   {% endfor %}
 </div>
 

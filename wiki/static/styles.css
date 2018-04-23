@@ -55,8 +55,34 @@ nav {
   /* font-size: 35px; */
 }
 
+.history-created-div {
+  width: 25%;
+  height: 70px;
+  float: left;
+  display: inline-block;
+}
+
 .history-content-div {
-  width: auto;
+  width: 60%;
+  height: 70px;
+  float: left;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-button-viev {
+  float: left;
+  width: 5%;
+  height: 70px;
+  display: inline-block;
+}
+
+.history-button-edit {
+  /* float: left; */
+  width: 5%;
+  height: 70px;
+  display: inline-block;
 }
 
 .textarea-p {
