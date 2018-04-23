@@ -138,7 +138,7 @@ def get_ver_from_cache(page, ver):
         # logging.info((a.v, a.post_name))
         if a.post_name == page and a.v == ver:
             pas = a
-            # logging.info('got the page')
+            logging.info(a.post_name)
             break
     return pas
 
@@ -210,7 +210,12 @@ class MainPage(Handler):
         user_id = self.request.cookies.get('user_id')
         buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
         # logging.info(buttons)
-        page = get_from_cache("main")
+        if '?v=' in self.request.url:
+            ver = int(self.request.url.split('?v=')[-1])
+            url_page = "main"
+            page = get_ver_from_cache(url_page, ver)
+        else:
+            page = get_from_cache("main")
         self.render("wikipage.html", page = page, buttons = buttons)
 
 
@@ -302,7 +307,11 @@ class EditPage(Handler):
     def render_edit_page(self, page = None, buttons = None):
         user_id = self.request.cookies.get('user_id')
         url_for_history = history_url(self.request.url)
+        #part to put all posts with same name in history without ?v=
+        if '?v=' in url_for_history:
+            url_for_history = url_for_history.split('?v=')[0]
         url_for_edit = ''
+        logging.info(url_for_history)
         buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
         self.render("edit.html", page=page, buttons = buttons)
 
@@ -310,9 +319,18 @@ class EditPage(Handler):
         url_page = page_from_url(self.request.url)
         if url_page == '':
             url_page = "main"
-            # need to gigure out how to meke the main page editable
         page = get_from_cache(url_page)
-        # logging.info(page.post_name)
+        if '?v=' in url_page:
+            ver = int(url_page.split('?v=')[-1])
+            url_page = url_page.split('?v=')[0]
+            page = get_ver_from_cache(url_page, ver)
+            point = self.request.url.find(url_page)
+            logging.info(dir(self.request.query_string))
+            # self.request.url = self.request.url[:point + len(url_page)]
+            # self.request.url = 'http://www.yandex.ru'
+            # need to gigure out how to meke the main page editable
+            # self.request.url = self.request.url.strip(r'?v=(?:[0-9]+)')
+        logging.info(self.request.query_string)
         user_id = self.request.cookies.get('user_id')
         if not user_id or not check_sec_val(user_id):
             if page and page.post_name != "main":
@@ -324,6 +342,7 @@ class EditPage(Handler):
                 return
         if page:
             self.render_edit_page(page)
+            # logging.info(page.post_name)
         else:
             self.render_edit_page()
 
