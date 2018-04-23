@@ -371,6 +371,8 @@ class EditPage(Handler):
             logging.info('hit post content')
             # permalink = posts[0].post_name
             # logging.info(posts[0].content)
+            #added this string below to try 
+            self.response.headers['Location'] = self.request.url
             self.redirect("/" + permalink)
         # in case
         else:
