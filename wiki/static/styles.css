@@ -1,0 +1,87 @@
+body {
+  font-size: 30px;
+  font-family: sans-serif;
+}
+
+nav {
+  width: auto;
+  background: linear-gradient(to bottom right, lightyellow, lightgreen);
+  font-size: 20px;
+  border-bottom: 1px solid grey;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.menu-buttons {
+  text-align: right;
+  margin-right: 50px;
+}
+
+.menu-button {
+  display: inline-block;
+}
+.menu-button:hover {
+  font-family: serif;
+  color: crimson;
+}
+
+.error-div {
+  color: red;
+  background-color: lightyellow;
+}
+
+.wikipage-div {
+  width: auto;
+  margin-top: 30px;
+  background: linear-gradient(to top left, orange, white);
+  border: 2px solid lightgrey;
+  border-radius: 15px;
+}
+
+.wikipage-content {
+  width: inherit;
+  padding: 7px;
+  margin-left: 10px;
+  font-size: 30px;
+}
+
+.history-content {
+  width: auto;
+  margin-top: 30px;
+  background: linear-gradient(to top left, orange, white);
+  border: 2px solid lightgrey;
+  border-radius: 15px;
+  padding: 7px;
+  /* font-size: 35px; */
+}
+
+.history-content-div {
+  width: auto;
+}
+
+.textarea-p {
+  width: 100%;
+}
+
+.textarea-ta {
+  width: 70%;
+  height: 400px;
+  background-color: lightyellow;
+  font-family: monospace;
+  font-size: 20px;
+}
+
+.save-edit {
+  font-size: 20px;
+  padding: 3px;
+  width: 80px;
+  border: 1px solid grey;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.save-edit:hover {
+  cursor: pointer;
+  background: lightblue;
+  box-shadow: 1px 2px black;
+}

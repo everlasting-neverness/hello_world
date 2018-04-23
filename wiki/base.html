@@ -3,17 +3,18 @@
   <head>
     <title>UdaWiki</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
   </head>
-  <body style="font-size: 30px;">
-    <nav style="font-size: 20px; margin-right: 50px;">
-      <div style="text-align: right;">
-        <a style="display: inline-block;" href="{{buttons['url_for_edit']}}">{{buttons['edit']}}</a>
+  <body>
+    <nav>
+      <div class="menu-buttons">
+        <a class="menu-button" href="{{buttons['url_for_edit']}}">{{buttons['edit']}}</a>
         <!-- <span>Viev</span> -->
-        <a style="display: inline-block;" href="{{buttons['url_for_history']}}">{{buttons['history']}}</a>
+        <a class="menu-button" href="{{buttons['url_for_history']}}">{{buttons['history']}}</a>
 
-        <a style="display: inline-block;" href="/login">{{buttons['login']}}</a>
-        <a style="display: inline-block;" href="/signup">{{buttons['signup']}}</a>
-        <a style="display: inline-block;" href="/logout">{{buttons['username']}}</a>
+        <a class="menu-button" href="/login">{{buttons['login']}}</a>
+        <a class="menu-button" href="/signup">{{buttons['signup']}}</a>
+        <a class="menu-button" href="/logout">{{buttons['username']}}</a>
       </div>
     </nav>
 

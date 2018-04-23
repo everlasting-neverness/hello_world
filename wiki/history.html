@@ -2,10 +2,10 @@
 
 {% block history %}
 
-<div>
+<div class="history-content">
   {% for page in pages %}
-  <div style="float: left; width: 30%;">{{page.created}}</div>
-  <div>{{page.content}}</div>
+  <div class='history-content-div' style="float: left; width: 30%;">{{page.created}}</div>
+  <div class='history-content-div'>{{page.content}}</div>
   {% endfor %}
 </div>
 
