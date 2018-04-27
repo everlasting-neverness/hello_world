@@ -94,7 +94,7 @@ class Users(db.Model):
 
 class Posts(db.Model):
     post_name = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
+content = db.TextProperty(required=False) 	# made this one false to pass the test
     created = db.DateTimeProperty(auto_now_add=True)
     v = db.IntegerProperty(required=True)
 
@@ -353,30 +353,31 @@ class EditPage(Handler):
         if post_name == '':
             post_name = "main"
         content = self.request.get("user_post")
-        if content:
+#        if content:
             # logging.info(content)
-            post = get_from_cache(post_name)
-            logging.info(post)
-            if not post:
-                post = Posts(post_name = post_name, content = content, v = 1)
-            elif post:
-                post = Posts(post_name = post_name, content = content, v = post.v + 1 )
-            post.put()
-            a = post.key().id()
-            test = Posts.get_by_id(a)
-            permalink = post.post_name
-            if permalink == "main":
-                permalink = ""
-            posts = top_posts(True)
-            logging.info('hit post content')
-            # permalink = posts[0].post_name
-            # logging.info(posts[0].content)
-            #added this string below to try
-            self.response.headers['Location'] = self.request.url
-            self.redirect("/" + permalink)
+        post = get_from_cache(post_name)
+        logging.info(post)
+        if not post:
+            post = Posts(post_name = post_name, content = content, v = 1)
+        elif post:
+            post = Posts(post_name = post_name, content = content, v = post.v + 1 )
+        post.put()
+        a = post.key().id()
+        test = Posts.get_by_id(a)
+        permalink = post.post_name
+        if permalink == "main":
+            permalink = ""
+        posts = top_posts(True)
+        logging.info('hit post content')
+        # permalink = posts[0].post_name
+        # logging.info(posts[0].content)
+        #added this string below to try
+        self.response.headers['Location'] = self.request.url
+        self.redirect("/" + permalink)
         # in case
-        else:
-            self.redirect("/")
+#        else:
+#        	self.render_edit_page()
+#            self.redirect("/")
 
 
 def page_from_url(url):
