@@ -94,7 +94,7 @@ class Users(db.Model):
 
 class Posts(db.Model):
     post_name = db.StringProperty(required=True)
-content = db.TextProperty(required=False) 	# made this one false to pass the test
+    content = db.TextProperty(required=False) 	# made this one false to pass the test
     created = db.DateTimeProperty(auto_now_add=True)
     v = db.IntegerProperty(required=True)
 
