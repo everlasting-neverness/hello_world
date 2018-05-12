@@ -8,13 +8,18 @@
   <body>
     <nav>
       <div class="menu-buttons">
-        <a class="menu-button" href="{{buttons['url_for_edit']}}">{{buttons['edit']}}</a>
+        {% if buttons['username'] %}
+        <a class="menu-button" href="/_edit/{{post_name}}">edit</a>
+        {% endif %}
+        <a class="menu-button" href="/_history/{{post_name}}">history</a>
         <!-- <span>Viev</span> -->
-        <a class="menu-button" href="{{buttons['url_for_history']}}">{{buttons['history']}}</a>
 
-        <a class="menu-button" href="/login">{{buttons['login']}}</a>
-        <a class="menu-button" href="/signup">{{buttons['signup']}}</a>
+        {% if not buttons['username'] %}
+        <a class="menu-button" href="/login">login</a>
+        <a class="menu-button" href="/signup">signup</a>
+        {% else %}
         <a class="menu-button" href="/logout">{{buttons['username']}}</a>
+        {% endif %}
       </div>
     </nav>
 
