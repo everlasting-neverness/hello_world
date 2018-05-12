@@ -9,7 +9,6 @@ import hashlib
 import random
 import json
 import string
-import json
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
@@ -157,38 +156,16 @@ def history_from_cache(page):
     # logging.info(type(pas[0].v))
     return pas
 
-def cookie_for_button(user_id, url_for_edit = '', url_for_history = ''):
+def get_username_for_template(user_id):
     if not user_id or not check_sec_val(user_id):
-        cookie_buttons = {'edit': '','url_for_edit': '',"url_for_history": url_for_history, "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
-
+        # cookie_buttons = {'edit': '','url_for_edit': '',"url_for_history": url_for_history, "history": "history", "login": 'login', 'signup': 'signup', 'username':''}
+        cookie_buttons = {}
     else:
         user = Users.get_by_id(int(user_id.split('|')[0]))
-        cookie_buttons = {'edit': 'edit', 'url_for_edit': url_for_edit, "url_for_history": url_for_history, "history": "history", "login": '', 'signup': '', 'username': user.username}
+        # cookie_buttons = {'edit': 'edit', 'url_for_edit': url_for_edit, "url_for_history": url_for_history, "history": "history", "login": '', 'signup': '', 'username': user.username}
+        cookie_buttons = {'username': user.username}
     return cookie_buttons
 
-def edit_url(url):
-    # point = url.find('?v=')
-    # if point:
-    #     url = url[:point]
-    make = url.split('/')
-    if '_history' in make:
-        make.remove('_history')
-    if '_edit' not in make:
-        make.insert(-1, '_edit')
-    url = '/'.join(make)
-    return url
-
-def history_url(url):
-    # point = url.find('?v=')
-    # if point:
-    #     url = url[:point]
-    make = url.split('/')
-    if '_edit' in make:
-        make.remove('_edit')
-    if '_history' not in make:
-        make.insert(-1, '_history')
-    url = '/'.join(make)
-    return url
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -205,10 +182,9 @@ class MainPage(Handler):
     # def render_front_page(self):
     #     self.render("base.html")
     def render_front_page(self, page = None, buttons = None):
-        url_for_edit = edit_url(self.request.url)
-        url_for_history = history_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+        # buttons = get_username_for_template(user_id, url_for_edit, url_for_history)
+        buttons = get_username_for_template(user_id)
         # logging.info(buttons)
         if '?v=' in self.request.url:
             ver = int(self.request.url.split('?v=')[-1])
@@ -306,13 +282,9 @@ class Login(Handler):
 class EditPage(Handler):
     def render_edit_page(self, page = None, buttons = None):
         user_id = self.request.cookies.get('user_id')
-        url_for_history = history_url(self.request.url)
-        #part to put all posts with same name in history without ?v=
-        if '?v=' in url_for_history:
-            url_for_history = url_for_history.split('?v=')[0]
-        url_for_edit = ''
-        logging.info(url_for_history)
-        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+
+        # buttons = get_username_for_template(user_id, url_for_edit, url_for_history)
+        buttons = get_username_for_template(user_id)
         self.render("edit.html", page=page, buttons = buttons)
 
     def get(self):
@@ -338,7 +310,8 @@ class EditPage(Handler):
             elif page and page.post_name == "main":
                 self.redirect("/")
             else:
-                self.error(404)
+                # self.error(404)
+                self.redirect('/login')
                 return
         if page:
             self.render_edit_page(page)
@@ -349,7 +322,7 @@ class EditPage(Handler):
 
     def post(self):
         # need a hint for main page
-        post_name = page_from_url(self.request.url)
+        post_name = page_from_url(self.request.url).split('?v=')[0]
         if post_name == '':
             post_name = "main"
         content = self.request.get("user_post")
@@ -381,17 +354,18 @@ class EditPage(Handler):
 
 
 def page_from_url(url):
-    return "".join(url.split('/')[-1])
+    return url.split('/')[-1]
 
 class WikiPage(Handler):
     def render_wiki_page(self, page = None, buttons = None):
-        url_for_edit = edit_url(self.request.url)
-        url_for_history = history_url(self.request.url)
+
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+        # buttons = get_username_for_template(user_id, url_for_edit, url_for_history)
+
+        buttons = get_username_for_template(user_id)
         self.response.headers['Content-Type'] = "text/html"
         self.response.headers['Location'] = self.request.url
-        self.render('wikipage.html', page=page, buttons = buttons)
+        self.render('wikipage.html', page=page, buttons = buttons, post_name = page.post_name)
 
     def get(self):
         url_page = page_from_url(self.request.url)
@@ -434,10 +408,12 @@ class HistoryPage(Handler):
         if url_page == '':
             url_page = "main"
         pages = history_from_cache(url_page)
-        url_for_edit = edit_url(self.request.url)
-        url_for_history = history_url(self.request.url)
         user_id = self.request.cookies.get('user_id')
-        buttons = cookie_for_button(user_id, url_for_edit, url_for_history)
+        # buttons = get_username_for_template(user_id, url_for_edit, url_for_history)
+
+        logging.info(url_page)
+        logging.info(pages)
+        buttons = get_username_for_template(user_id)
         if pages:
             self.render('history.html', pages = pages, buttons = buttons)
         else:
