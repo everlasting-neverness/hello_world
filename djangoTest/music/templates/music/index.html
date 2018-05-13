@@ -1,3 +1,12 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}" />
+
+<nav>
+  <div>
+      <a href="{% url 'music:index' %}">Title</a>
+  </div>
+</nav>
+
 {% if all_albums %}
 
 <ul>

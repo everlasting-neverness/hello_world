@@ -325,7 +325,7 @@ class EditPage(Handler):
         post_name = page_from_url(self.request.url).split('?v=')[0]
         if post_name == '':
             post_name = "main"
-        content = self.request.get("user_post")
+        content = self.request.get("content")
 #        if content:
             # logging.info(content)
         post = get_from_cache(post_name)
