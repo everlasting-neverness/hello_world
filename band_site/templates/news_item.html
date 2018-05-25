@@ -1,0 +1,16 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<div class='container'>
+<div>
+  <h3>{{item.name}}</h3>
+  <div>{{item.date}}</div>
+  <br>
+  <div>{{item.content}}</div>
+  {% if item.pictures %}
+  <div>{{item.pictures}}</div>
+  {% endif %}
+</div>
+<div><a href="{{url_for('news')}}">Back</a></div>
+</div>
+{% endblock %}

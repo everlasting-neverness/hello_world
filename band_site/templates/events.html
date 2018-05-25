@@ -1,0 +1,11 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<div class='container'>
+{% for event in events %}
+  <div>{{event.place}}</div>
+  <div>{{event.data}}</div>
+  <div>{{event.comment}}</div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<div class='container'>
+<h3>{{song.name}}</h3>
+<br>
+{% for a in song.content %}
+<div>
+<span>{{a}}</span><br>
+</div>
+{% endfor %}
+<div><a href="{{url_for('lyrics')}}">Back</a></div>
+</div>
+{% endblock %}

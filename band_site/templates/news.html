@@ -1,0 +1,14 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<div class='container'>
+{% for item in news %}
+<div>
+  <div>{{item.date}}</div>
+  <div>{{item.name}}</div>
+  <div>{{item.content}}</div>
+</div>
+<div><a href="{{url_for('news_item', news_id=item.id)}}">More</a></div>
+{% endfor %}
+</div>
+{% endblock %}

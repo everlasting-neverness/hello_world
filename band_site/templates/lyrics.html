@@ -1,0 +1,9 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<div class='container'>
+{% for text in texts %}
+<div><a href="{{url_for('song_lyrics', song_name=text.name)}}" class="nav-link">{{text.name}}</a></div>
+{% endfor %}
+</div>
+{% endblock %}
