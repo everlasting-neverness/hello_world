@@ -1,7 +1,8 @@
 from flask import Flask, url_for, redirect, request, render_template, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_login import UserMixin, LoginManager, current_user, login_user, logout_user
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
@@ -13,7 +14,32 @@ app.config['SECRET_KEY'] = 'gewagh23tgaweFWF3'
 
 db = SQLAlchemy(app)
 
-admin = Admin(app)
+login = LoginManager(app)
+
+@login.user_loader
+def load_user(user_id):
+    return AdminBase.query.get(user_id)
+
+class MyModelViev(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login_for_admin'))
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+admin = Admin(app, index_view=MyAdminIndexView())
+
+class AdminBase(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name= db.Column(db.String(25))
+    password = db.Column(db.String(50))
+
+# this part allows admin to manipulate AdminBase db(add, delete etc.)
+# admin.add_view(MyModelViev(AdminBase, db.session))
 
 class Lyrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,10 +68,6 @@ class News(db.Model):
     def __repr__(self):
         return '<News %r>' % (self.name)
 
-class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name= db.Column(db.String(25))
-    password = db.Column(db.String(50))
 
 admin.add_view(ModelView(Lyrics, db.session))
 admin.add_view(ModelView(Events, db.session))
@@ -106,12 +128,13 @@ def login_for_admin():
     if request.method == 'POST':
         username = request.form['username']
         password_candidate = request.form['password']
-        result = Admin.query.filter_by(name=username).first()
+        result = AdminBase.query.filter_by(name=username).first()
         if result:
             password = result.password
             if sha256_crypt.verify(password_candidate, password):
                 session['logged_in'] = True
                 session['username'] = username
+                login_user(result)
                 return redirect(url_for('index'))
             else:
                 return render_template('login_for_admin.html')
@@ -119,25 +142,10 @@ def login_for_admin():
             return render_template('login_for_admin.html')
     return render_template('login_for_admin.html')
 
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        print 'wraps'
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            return redirect(url_for('index'))
-    return wrap
-
-@app.route('/admin')
-@is_logged_in
-def admin():
-    return render_template('admin/index.html')
-
-@app.route('/login_for_admin/logout')
-@is_logged_in
+@app.route('/admin/logout')
 def logout():
     session.clear()
+    logout_user()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
