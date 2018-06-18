@@ -2,6 +2,8 @@ import webapp2
 import jinja2
 import os
 import cgi
+import string
+import logging
 
 def escape_html(s):
     return cgi.escape(s, quote = True)
@@ -40,16 +42,20 @@ class MainHandler(Handler):
                      ".--.":'p', "--.-":'q', ".-.":'r', "...":'s', "-":'t', "..-":'u',
                      "...-":'v', ".--":'w', "-..-":'x', "-.--":'y', "--..":'z', ".----":'1',
                      "..---":'2', "...--":'3', "....-":'4', ".....":'5',
-                     "-....":'6', "--...":'7', "---..":'8', "----.":'9', "-----":'0', "||": ' '}
+                     "-....":'6', "--...":'7', "---..":'8', "----.":'9', "-----":'0', "/\\": ' '}
 
         output = ''
         # if self.request.get("refresh"):
         #     self.render("index.html", user_input='', output='')
+        lang = self.request.get('language')
+        logging.info(lang)
         line = escape_html(self.request.get("user_input"))
-        if line == '':
-            self.render("instruction.html")
+        if not line:
+            self.render("instruction.html", user_input=line, output='Please enter some content to encode!')
         else:
             if line[0] == '.' or line[0] == '-':
+                if lang == "from_english_to_morse":
+                    return self.render("instruction.html", user_input=line, output="Please choose the correct way of encoding!")
                 form = line.split()
                 for l in form:
                     if l in morse_alphab:
@@ -57,12 +63,15 @@ class MainHandler(Handler):
                     if l not in morse_alphab:
                         output += '?'
             else:
+                strng = string.ascii_letters
+                if line[0] in strng and lang == "from_morse_to_english":
+                    return self.render("instruction.html", user_input=line, output="Please choose the correct way of encoding!")
                 for letter in line:
                     if letter in eng_alphabeth:
                         output += eng_alphabeth[letter] + ' '
                     if letter not in eng_alphabeth:
                         if letter == " ":
-                            output += " || "
+                            output += " /\ "
                         else:
                             output += '?' + ' '
             self.render("instruction.html", user_input=line, output=output)

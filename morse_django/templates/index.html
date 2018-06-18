@@ -3,12 +3,14 @@
   <head>
     <title>Morse encoder/decryptor</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/styles.css" type="text/css" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}" type="text/css" />
   </head>
   <body>
     <header><p class="header"><a href="/" title="Home page">M<span>o</span>rse enc<span>o</span>der<span>/</span>decr<span>y</span>pt<span>o</span>r</a></p></header>
     <div class='logo'>
+
         <img src="http://getfont.ru/img/store/cms_shop/original/preview-1_61816.png" alt="telegraph" class="lenta" />
+
     </div>
     <div class="form-div">
     <form method="post">
@@ -19,19 +21,12 @@
       <br />
       <input type="radio" name="choice" value="to_morse" checked> From english to morse code -->
       <p class="buttons">
-        <div class="language-selector">
-        <label for="language"><strong>Encode</strong>
-        <select name="language" class="selector">
-          <option value="from_english_to_morse">from english to morse</option>
-          <option value="from_morse_to_english">from morse to english</option>
-        </select>
-        </label>
-        </div>
       <input type="submit" class="submit" value="Submit">
       <button type="submit" formmethod="get" formaction="/" class="reset">Reset</button>
       </p>
       <!-- <br />
       <input type="button" name="refresh" value="Refresh" formaction="index.html" formmethod="get"> -->
+
       <label class="labels">R<span>e</span>s<span>u</span>lt</label>
       <br />
       <textarea readonly name="output" class="texta">{{output}}</textarea>
@@ -39,7 +34,10 @@
     </form>
     </div>
     <br />
+
     <div class="aside">
+
+
       {% block instruction %}
       {% endblock %}
 
@@ -48,6 +46,8 @@
 
       {% block about %}
       {% endblock %}
+
+
     </div>
     <footer>
     <ul>
@@ -55,7 +55,8 @@
       <li><a href="/dictionary">Dictionary</a></li>
       <li><a href="/about">About</a></li>
     </ul>
-    <div class="version">V 0.5.0</div>
+    <div class="version">V 0.4.2</div>
     </footer>
+
   </body>
   </html>
