@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-sm-8 col-sm-offset-2">
+<h1>{{title}}</h1>
+
+<form action="" method="GET">
+<input type="text" name="q" placeholder="Search posts" value="{{request.GET.q}}">
+<input type="submit" value="Search">
+</form>
+<br>
+{% for item in object_list %}
+<div class="row">
+<div class="col-sm-6">
+  <div class="thumbnail">
+    {% if item.image %}
+    <img src="{{ item.image.url }}" alt="" class="img-responsive">
+    {% endif %}
+    <div class="caption">
+      {% if item.draft %}<h3 style="color:red;">Draft</h3>{% endif %} {% if item.publish > today %}<h3>Future Post</h3>{% endif %}
+      <h3><a href="{{ item.get_absolute_url }}">{{ item.title }} </a><small> {{item.publish}} </small></h3>
+      {% if item.user.get_full_name %}<p>{{ item.user.get_full_name}}</p>{% endif %}
+      <p>{{item.content|linebreaks|truncatechars:50}}</p>
+      <p><a href="{{ item.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+    </div>
+  </div>
+</div>
+{% cycle "" "</div><div class='row'>" %}
+</div>
+{% endfor %}
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?{{page_request_var}}=1">&laquo; first</a>
+            <a href="?{{page_request_var}}={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?{{page_request_var}}={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+            <a href="?{{page_request_var}}={{ object_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+</div>
+
+
+
+
+{% endblock %}

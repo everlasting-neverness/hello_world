@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load urlify %}
+
+
+{% block head_title %}{{ instance.title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="col-sm-6 col-sm-offset-2">
+  {% if instance.image %}
+  <img src="{{ instance.image.url }}" alt="" class="img-responsive">
+  {% endif %}
+<h1>{{title}} <small>{% if instance.draft %}<span style="color:red;">Draft</span>{% endif %} {{instance.publish}}</small></h1>
+{% if instance.user.get_full_name %}
+<p>Author: {{ instance.user.get_full_name }}</p>
+{% endif %}
+ <!-- {{share_string}} == {{instance.content|urlify}} -->
+<p>
+<div class="fb-like" data-href="{{ request.build_absolute_uri }}"
+data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</p>
+<!-- truncatechars:20 - limit the view area of element's content to 20 signs -->
+<p>
+<a href="https://twitter.com/home?status={{ instance.content|truncatechars:20|urlify }}%20{{ request.build_absolute_uri }}">
+Twitter
+</a>
+</p>
+
+<p>
+<a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{instance.title}}">
+Reddit</a>
+</p>
+
+<div class="row">
+<div class="col-sm-12">
+<hr>
+<p>{{instance.content|linebreaks}}</p>
+<hr>
+<br>
+<div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+</div>
+</div>
+</div>
+{% endblock %}
