@@ -10,6 +10,24 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils import timezone
 from .forms import PostForm
 from .models import Post
+from .serializers import PostSerializer
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class PostList(APIView):
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        # print serializer.data
+        return Response(serializer.data)
+
+    def post(self, request):
+        pass    
+
+
+
 
 def post_list(request):
     # queryset_list = Post.objects.filter(draft=False).filter(publish__lte=timezone.now()) # __lte - means 'less than or equalls to'. timezone.now() - the current time
@@ -25,7 +43,7 @@ def post_list(request):
             Q(user__first_name__icontains=query)|
             Q(user__last_name__icontains=query)
             ).distinct()
-    # | means q(smth) OR q(smth) OR .. distinct - makes duplicates not to appear        
+    # | means q(smth) OR q(smth) OR .. distinct - makes duplicates not to appear
     paginator = Paginator(queryset_list, 6) # Show 25 contacts per pagepag
     page_request_var = 'page'
     page = request.GET.get(page_request_var)
