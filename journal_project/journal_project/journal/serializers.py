@@ -4,9 +4,9 @@ from .models import Kid, Journal
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journal
-        fields = ('pk', 'kid_name', 'arrival_time', 'leaving_time', 'parents', 'date')
+        fields = ('pk', 'name', 'arrival_time', 'departure_time', 'parents', 'date')
 
 class KidSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kid
-        fields = ('name', 'sex', 'birthday', 'grade', 'photo', 'is_learning_now')
+        fields = ('name', 'pk', 'sex', 'birthday', 'grade', 'photo', 'is_present')

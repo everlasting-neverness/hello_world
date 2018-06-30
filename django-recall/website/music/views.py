@@ -1,5 +1,7 @@
 from django.views import generic
 from django.views.generic import View
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from rest_framework import status
@@ -12,17 +14,37 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import UserForm
 
 
-class AlbumList(APIView):
-    def get(self, request):
-        albums = Album.objects.all()
-        serializer = AlbumSerializer(albums, many=True)
-        return Response(serializer.data)
+class AlbumList(UpdateModelMixin, APIView):
+    lookup_field = 'pk'
+    serializer_class = AlbumSerializer
 
-class SongList(APIView):
-    def get(self, request, pk):
-        songs = Song.objects.filter(album=pk)
-        serializer = SongSerializer(songs, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return Album.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        return self.put(request, *args, **kwargs)
+
+
+
+    # def get_object(self):
+    #     pk = self.kwargs.get('pk')
+    #     return Album.objects.all()
+    # def get(self, request):
+    #     albums = Album.objects.all()
+    #     serializer = AlbumSerializer(albums, many=True)
+    #     return Response(serializer.data)
+
+class SongList(RetrieveUpdateDestroyAPIView):
+    lookup_field = 'pk'
+    serializer_class = SongSerializer
+
+    def get_queryset(self):
+        return Song.objects.filter(album=self.kwargs.get('pk'))
+
+    # def get(self, request, pk):
+    #     songs = Song.objects.filter(album=pk)
+    #     serializer = SongSerializer(songs, many=True)
+    #     return Response(serializer.data)
 
 
 class UserFormView(View):
