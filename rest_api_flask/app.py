@@ -34,13 +34,18 @@ def delete_kid(id):
 def create_kid():
     user_data = json.loads(request.data)
     print(user_data)
-    return json.dumps(db_interactions.create_kid(user_data))
+    return json.dumps(db_interactions.create_item(user_data))
+
+@app.route('/api/logs')
+def get_items():
+    logs = json.dumps(db_interactions.get_items('logs'))
+    return logs
 
 @app.route('/api/logs', methods=['POST'])
-def create_kid():
+def create_journal_entry():
     user_data = json.loads(request.data)
     print(user_data)
-    return json.dumps(db_interactions.create_kid(user_data))
+    return json.dumps(db_interactions.create_item(user_data))
 
 if __name__ == '__main__':
     app.debug = True

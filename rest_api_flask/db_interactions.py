@@ -10,9 +10,8 @@ cursor = None
 def initdb():
     global connection
     global cursor
-    connection = psycopg2 \
-        .connect("dbname='{db_name}' user='user1' host='localhost'" \
-        .format(db_name=DB_NAME))
+    # .connect("dbname='{db_name}' user='user1' host='localhost'" \
+    connection = psycopg2.connect("dbname='{db_name}' user='user1' password='123456' host='localhost'".format(db_name=DB_NAME))
     cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return connection
 
@@ -73,7 +72,7 @@ def get_kid(id):
     kid = make_dictionary(kid)
     return kid
 
-def create_kid(object):
+def create_item(object):
     global cursor
     items = ['name', 'date_of_birth', 'gender', 'status', 'grade']
     for item in items:
@@ -97,7 +96,7 @@ def create_kid(object):
 
 validationItems = {
     'kids': ['name', 'date_of_birth', 'gender', 'status', 'grade'],
-    'journal': []
+    'journal': ['kid_id', 'parent', 'arrival', 'departure', 'date']
 }
 
 def update_item(tableName, object):
@@ -127,5 +126,16 @@ def delete_kid(id):
     commitChanges()
     return 'deleted successfully'
 
- # [(8, 'Ivanov Ivan', 'Male', '11.11.2015', 'attending', '1')]
-# [{ 'id': 8, 'name': 'I..I..', 'gender': 'Male'}]
+def get_items(tableName):
+    global cursor
+    if not connection:
+        raise Exception('No database connection')
+    cursor.execute("SELECT * from {table_name}").format(table_name=tableName)
+    items = cursor.fetchall()
+    # print(dir(kids[0]))
+    # print([x for x in logs[0].items()])
+    items_list = []
+    for item in items:
+        item = [x for x in items.items()]
+        items_list.append(make_dictionary(item))
+    return items_list
