@@ -27,7 +27,7 @@ def update_kid(id):
 def delete_kid(id):
     if not db_interactions.get_kid(id):
         return 'False input'
-    return db_interactions.delete_kid(id)
+    return db_interactions.delete_item('kids', id)
 
 
 @app.route('/api/kids', methods=['POST'])
@@ -37,15 +37,28 @@ def create_kid():
     return json.dumps(db_interactions.create_item(user_data))
 
 @app.route('/api/logs')
-def get_items():
-    logs = json.dumps(db_interactions.get_items('logs'))
+def get_logs():
+    logs = json.dumps(db_interactions.get_logs())
     return logs
 
 @app.route('/api/logs', methods=['POST'])
-def create_journal_entry():
+def create_log_entry():
     user_data = json.loads(request.data)
-    print(user_data)
-    return json.dumps(db_interactions.create_item(user_data))
+    return json.dumps(db_interactions.create_item('logs', user_data))
+
+# @app.route('/api/logs/<int:id>', methods=['PUT'])
+# def update_log(id):
+#     if not db_interactions.get_log(id):
+#         return 'False input'
+#     user_data = json.loads(request.data)
+#     return json.dumps(db_interactions.update_item('logs', user_data))
+
+
+@app.route('/api/logs/<int:id>', methods=['DELETE'])
+def delete_log(id):
+    if not db_interactions.get_log(id):
+        return 'False input'
+    return db_interactions.delete_item('logs', id)
 
 if __name__ == '__main__':
     app.debug = True
