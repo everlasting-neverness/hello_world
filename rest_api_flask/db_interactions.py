@@ -99,26 +99,26 @@ validationItems = {
     'journal': ['kid_id', 'parent', 'arrival', 'departure', 'date']
 }
 
-def update_item(tableName, object):
-    global cursor
-    items = validationItems[tableName]
-    for item in object:
-        if not (item in object):
-            return 'False input'
-    s = '''update kids set
-        (name, date_of_birth, gender, status, grade)
-        =
-        ('%(name)s',
-         '%(date_of_birth)s',
-         '%(gender)s',
-         '%(status)s',
-         '%(grade)s'
-        )
-        where id = '%(id)s'
-    ''' % object
-    cursor.execute(s)
-    commitChanges()
-    return object
+# def update_item(tableName, object):
+#     global cursor
+#     items = validationItems[tableName]
+#     for item in object:
+#         if not (item in object):
+#             return 'False input'
+#     s = '''update kids set
+#         (name, date_of_birth, gender, status, grade)
+#         =
+#         ('%(name)s',
+#          '%(date_of_birth)s',
+#          '%(gender)s',
+#          '%(status)s',
+#          '%(grade)s'
+#         )
+#         where id = '%(id)s'
+#     ''' % object
+#     cursor.execute(s)
+#     commitChanges()
+#     return object
 
 def delete_kid(id):
     global cursor
