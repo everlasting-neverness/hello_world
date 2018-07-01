@@ -126,16 +126,103 @@ def delete_kid(id):
     commitChanges()
     return 'deleted successfully'
 
-def get_items(tableName):
+
+
+def get_logs():
     global cursor
     if not connection:
         raise Exception('No database connection')
-    cursor.execute("SELECT * from {table_name}").format(table_name=tableName)
-    items = cursor.fetchall()
-    # print(dir(kids[0]))
-    # print([x for x in logs[0].items()])
-    items_list = []
+    cursor.execute("""SELECT * from logs""")
+    logs = cursor.fetchall()
+    print([x for x in logs[0].items()])
+    logs_list = []
+    for log in logs:
+        log = [x for x in log.items()]
+        logs_list.append(make_dictionary(log))
+    return logs_list
+
+def get_log(id):
+    global cursor
+    cursor.execute("select * from logs where id=%s" % (str(id),))
+    log = cursor.fetchone()
+    if not log:
+        return None
+    log = [x for x in log.items()]
+    log = make_dictionary(log)
+    return log
+
+def create_item(object):
+    global cursor
+    items = ['kid_id', 'parent', 'arrival', 'departure', 'date']
     for item in items:
-        item = [x for x in items.items()]
-        items_list.append(make_dictionary(item))
-    return items_list
+        if item not in object:
+            return 'False input'
+    s = '''insert into logs
+        (kid_id, parent, arrival, departure, date)
+    values
+        ('%(kid_id)s',
+         '%(parent)s',
+         '%(arrival)s',
+         '%(departure)s',
+         '%(date)s'
+        )
+    ''' % object
+    cursor.execute(s)
+    commitChanges()
+    return 'ok'
+
+def update_item(tableName, object):
+    global cursor
+    items = validationItems[tableName]
+    for item in object:
+        if not (item in object):
+            return 'False input'
+    if tableName == 'kids':    
+        s = '''update kids set
+            (name, date_of_birth, gender, status, grade)
+            =
+            ('%(name)s',
+             '%(date_of_birth)s',
+             '%(gender)s',
+             '%(status)s',
+             '%(grade)s'
+            )
+            where id = '%(id)s'
+        ''' % object
+    else:
+        s = '''update logs set
+           (kid_id, parent, arrival, departure, date)
+            =
+            ('%(kid_id)s',
+         '%(parent)s',
+         '%(arrival)s',
+         '%(departure)s',
+         '%(date)s')
+            where id = '%(id)s'
+        ''' % object
+    cursor.execute(s)
+    commitChanges()
+    return object
+
+def delete_item(tableName, id):
+    global cursor
+    if tableName == 'kids':
+        cursor.execute("Delete from kids where id='%s'" % id)
+    else:
+        cursor.execute("Delete from logs where id='%s'" % id)
+    commitChanges()
+    return 'deleted successfully'
+
+# def get_items(tableName):
+#     global cursor
+#     if not connection:
+#         raise Exception('No database connection')
+#     cursor.execute("SELECT * from {table_name}").format(table_name=tableName)
+#     items = cursor.fetchall()
+#     # print(dir(kids[0]))
+#     # print([x for x in logs[0].items()])
+#     items_list = []
+#     for item in items:
+#         item = [x for x in items.items()]
+#         items_list.append(make_dictionary(item))
+#     return items_list
