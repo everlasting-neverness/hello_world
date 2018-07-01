@@ -1,5 +1,6 @@
 import psycopg2
 import psycopg2.extras
+import datetime
 
 DB_NAME = 'kids_db'
 TABLE_NAME = 'kids'
@@ -132,7 +133,7 @@ def get_logs():
     global cursor
     if not connection:
         raise Exception('No database connection')
-    cursor.execute("""SELECT * from logs""")
+    cursor.execute("""SELECT * from logs where departure = null and date = %s""") % datetime.now()
     logs = cursor.fetchall()
     print([x for x in logs[0].items()])
     logs_list = []
