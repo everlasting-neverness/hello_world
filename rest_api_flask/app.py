@@ -44,14 +44,19 @@ def get_logs():
 @app.route('/api/logs', methods=['POST'])
 def create_log_entry():
     user_data = json.loads(request.data)
-    return json.dumps(db_interactions.create_item('logs', user_data))
+    return json.dumps(db_interactions.create_log_entry(user_data))
+
+@app.route('/api/logs/<int:id>')
+def get_log(id):
+    log = json.dumps(db_interactions.get_log(id))
+    return log
 
 @app.route('/api/logs/<int:id>', methods=['PUT'])
 def update_log(id):
     if not db_interactions.get_log(id):
-        return 'False input'
+        return {'False input': 'False input'}
     user_data = json.loads(request.data)
-    return json.dumps(db_interactions.update_log(user_data))
+    return json.dumps(db_interactions.update_log(user_data, id))
 
 
 @app.route('/api/logs/<int:id>', methods=['DELETE'])

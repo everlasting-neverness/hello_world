@@ -35,6 +35,16 @@ def add_kid_to_db(cursor):
         ('Ivanov Ivan', 'Male', '11.11.2015', 'attending', '1')
     ''')
 
+def add_log(cursor):
+    params = ('11.11.2018 11:02', '11.11.2018')
+    cursor.execute('''insert into logs
+        (parent, arrival, departure, date, kid_id)
+    values
+        ('Dmitriy', %s, 'null', %s, 2)
+    ''', params)
+    commitChanges()
+    return 'ok'
+
 def add_kid():
     global cursor
     add_kid_to_db(cursor)
@@ -78,7 +88,7 @@ def create_item(object):
     items = ['name', 'date_of_birth', 'gender', 'status', 'grade']
     for item in items:
         if item not in object:
-            return 'False input'
+            return {'False input':'False input'}
     s = '''insert into kids
         (name, date_of_birth, gender, status, grade)
     values
@@ -92,7 +102,7 @@ def create_item(object):
     cursor.execute(s)
     # % (object['name'], object['date_of_birth'], object['gender'], object['status'], object['grade']))
     commitChanges()
-    return 'ok'
+    return {'ok':'ok'}
 
 
 validationItems = {
@@ -105,7 +115,7 @@ def update_item(tableName, object):
     items = validationItems[tableName]
     for item in object:
         if not (item in object):
-            return 'False input'
+            return {'False input':'False input'}
     s = '''update kids set
         (name, date_of_birth, gender, status, grade)
         =
@@ -125,7 +135,7 @@ def delete_kid(id):
     global cursor
     cursor.execute("Delete from kids where id='%s'" % id)
     commitChanges()
-    return 'deleted successfully'
+    return {'deleted successfully': 'deleted successfully'}
 
 
 
@@ -133,7 +143,7 @@ def get_logs():
     global cursor
     if not connection:
         raise Exception('No database connection')
-    cursor.execute("""SELECT * from logs where departure = null and date = %s""") % datetime.now()
+    cursor.execute("""SELECT * from logs where departure = 'null' and date = '%s'""" % ("11.11.2018", ))
     logs = cursor.fetchall()
     print([x for x in logs[0].items()])
     logs_list = []
@@ -152,14 +162,15 @@ def get_log(id):
     log = make_dictionary(log)
     return log
 
-def create_item(object):
+def create_log_entry(object):
     global cursor
     items = ['kid_id', 'parent', 'arrival', 'departure', 'date']
     for item in items:
         if item not in object:
-            return 'False input'
-    if object['departure'] != '':
-         return 'False input'
+            return {'False input':'False input'}
+    if object['departure'] != 'null':
+        print object['departure']
+        return {'False input':'False input'}
     s = '''insert into logs
         (kid_id, parent, arrival, departure, date)
     values
@@ -172,7 +183,7 @@ def create_item(object):
     ''' % object
     cursor.execute(s)
     commitChanges()
-    return 'ok'
+    return {'ok':'ok'}
 
 # def update_item(tableName, object):
 #     global cursor
@@ -180,7 +191,7 @@ def create_item(object):
 #     for item in object:
 #         if not (item in object):
 #             return 'False input'
-#     if tableName == 'kids':    
+#     if tableName == 'kids':
 #         s = '''update kids set
 #             (name, date_of_birth, gender, status, grade)
 #             =
@@ -207,24 +218,29 @@ def create_item(object):
 #     commitChanges()
 #     return object
 
-def update_log(object):
+def update_log(object, id):
     global cursor
     kid_id = object['kid_id']
-    cursor.execute("SELECT * from logs where kid_id = %s") % (kid_id, )
+    cursor.execute("SELECT * from logs where kid_id = '%s' and id = '%s'" % (kid_id, id))
     q = cursor.fetchone()
-    if q.departure == 'null':
-        s = '''update logs set
-           (parent, arrival, departure, date)
-           =
-          ('%(parent)s',
-         '%(arrival)s',
-         '%(departure)s',
-         '%(date)s')
-          where kid_id = '%(kid_id)s'
-            ''' % object
-        cursor.execute(s)
-        commitChanges()
-    return object 
+    if not q:
+        return {'False input':'False input'}
+    q = [x for x in q.items()]
+    q = make_dictionary(q)
+    if q['departure'] != 'null':
+        return {'False input':'False input'}
+    s = '''update logs set
+       (parent, arrival, departure, date)
+       =
+      ('%(parent)s',
+     '%(arrival)s',
+     '%(departure)s',
+     '%(date)s')
+      where kid_id = '%(kid_id)s'
+        ''' % object
+    cursor.execute(s)
+    commitChanges()
+    return object
 
 def delete_item(tableName, id):
     global cursor
