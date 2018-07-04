@@ -5,7 +5,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^journal/', include('journal.urls'))
+    url(r'^api/', include('journal.urls'))
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
