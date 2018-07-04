@@ -65,6 +65,7 @@ def delete_log(id):
         return 'False input'
     return db_interactions.delete_item('logs', id)
 
+
 if __name__ == '__main__':
     app.debug = True
     app.run()

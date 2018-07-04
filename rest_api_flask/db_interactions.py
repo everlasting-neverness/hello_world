@@ -64,7 +64,6 @@ def get_kids():
         raise Exception('No database connection')
     cursor.execute("""SELECT * from kids""")
     kids = cursor.fetchall()
-    # print(dir(kids[0]))
     print([x for x in kids[0].items()])
     kids_list = []
     for kid in kids:
@@ -143,7 +142,7 @@ def get_logs():
     global cursor
     if not connection:
         raise Exception('No database connection')
-    cursor.execute("""SELECT * from logs where departure = 'null' and date = '%s'""" % ("11.11.2018", ))
+    cursor.execute("""SELECT * from logs where departure = 'null' and date = '%s'""" % (str(datetime.datetime.today().strftime("%d.%m.%Y")), ))
     logs = cursor.fetchall()
     print([x for x in logs[0].items()])
     logs_list = []
@@ -221,7 +220,7 @@ def create_log_entry(object):
 def update_log(object, id):
     global cursor
     kid_id = object['kid_id']
-    cursor.execute("SELECT * from logs where kid_id = '%s' and id = '%s'" % (kid_id, id))
+    cursor.execute("SELECT * from logs where kid_id = '%s' and id = '%s' and date = '%s'" % (kid_id, id, str(datetime.datetime.today().strftime("%d.%m.%Y"))))
     q = cursor.fetchone()
     if not q:
         return {'False input':'False input'}
