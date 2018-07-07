@@ -26,56 +26,56 @@ img {
   background-color: #222;
   width: 600px;
   margin: 0 auto;
-}
-
-.secondary {
   padding: 10px;
 }
 
+.secondary {
+  /* padding: 8px; */
+  /* padding-bottom: 6px; */
+}
+
 .date {
-  font-size: 13px;
+  font-size: 14px;
   color: #aaa;
   float: right;
+  vertical-align: middle;
+  display: inline-block;
+  /* padding: 7px; */
 }
 
-.icons svg {
+.icons span {
+  display: inline-block;
+  padding: 3px;
+}
+
+span svg {
   fill: #aaa;
+  width: 20px;
 }
 
-.heart {
-  display: inline-block;
-  /* background-image: url(static/heart.svg); */
-}
-
-.send {
-  display: inline-block;
-  /* background-image: image('static/send.svg'); */
-}
-
-.bookmark {
-  display: inline-block;
+.send svg {
+  width: 23px;
 }
 
 .divider {
-  /* border-color: #333; */
-  width: 95%;
-  border: 1px solid #aaa;
+  border: 1px solid #333;
+  /* color: #333; */
+  height: 1px;
 }
 
 .comments {
-
+  padding-top: 15px;
 }
 
 .comment-div {
   height: 50px;
-
 }
 
 .avatar {
   width: 50px;
   height: 50px;
-  padding: 10px;
-  padding-top: 0px;
+  /* padding: 10px; */
+  /* padding-top: 0px; */
   float: left;
  }
 
