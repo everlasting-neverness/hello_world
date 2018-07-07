@@ -1,0 +1,120 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+  color: white;
+  margin: 0;
+}
+
+hr {
+  color: white;
+  border: 1px solid white;
+  border-radius: 7px;
+}
+
+.main-div {
+  min-width: 600px;
+  margin: 15px;
+}
+
+.content-holder {
+  margin: 0 auto;
+  display: block;
+  float: none;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.inside-block {
+  width: 20%;
+  padding: 3px;
+  float: left;
+  position: relative;
+}
+
+img {
+  width: 100%;
+  display: block;
+}
+
+.clear {
+  clear: both;
+}
+
+.logo-image {
+  width: 50px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.logo-text {
+  font-size: 20px;
+  display: inline-block;
+}
+
+.footer {
+  width: 100%;
+}
+
+.icons {
+  float: right;
+}
+
+.icon {
+  display: inline-block;
+  width: 55px;
+  height: 55px;
+  background-image: url('https://images.formget.com/wp-content/uploads/2014/12/Social_circle.png');
+}
+
+.icon-vk {
+    background-position: 503px 161px;
+}
+
+.icon-fb {
+  background-position: 200px 161px;
+}
+
+.icon-t {
+  background-position: 139px 161px;
+}
+
+.icon-G {
+  background-position: 260px 161px;
+}
+
+.hidden {
+  border-radius: 4px;
+  position: absolute;
+  background-color: rgba(0,0,0,0.7);
+  padding: 5px;
+  padding-bottom: 2px;
+  left: 17px;
+  right: 17px;
+  bottom: 14px;
+  display: none;
+}
+
+.likes img {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.comments img {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.inside-block:hover .hidden {
+  display: inline-block;
+}
+
+.group {
+  white-space: nowrap;
+}
