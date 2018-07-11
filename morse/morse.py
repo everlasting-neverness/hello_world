@@ -55,7 +55,7 @@ class MainHandler(Handler):
         else:
             if line[0] == '.' or line[0] == '-':
                 if lang == "from_english_to_morse":
-                    return self.render("instruction.html", user_input=line, output="Please choose the correct way of encoding!")
+                    return self.render("instruction.html", user_input=line,  output="Please choose the correct way of encoding!")
                 form = line.split()
                 for l in form:
                     if l in morse_alphab:
