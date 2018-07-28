@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from .forms import SignUpForm
+from .forms import SignUpForm, ContactForm
 
 def home(request):
     title = "Welcome"
@@ -18,9 +18,20 @@ def home(request):
         full_name = form.cleaned_data.get('full_name')
         if not full_name:
             full_name = "New full name"
-        instance.full_name = full_name    
+        instance.full_name = full_name
         instance.save()
         context = {
             "title": "Thank you"
         }
     return render(request, "home.html", context)
+
+def contact(request):
+    form = ContactForm(request.POST or None)
+    if form.is_valid():
+        email = cleaned_data.get("email")
+        full_name = cleaned_data.get("full_name")
+        message = cleaned_data.get("message")
+    context = {
+        'form': form,
+    }
+    return render(request, 'forms.html', context)

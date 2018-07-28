@@ -2,10 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Burst Souls Home</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>Home of Burst Souls</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="{{url_for('static', filename="style.css")}}">
   </head>
   <body>
@@ -16,15 +15,17 @@
        -->
        <div class="top-image">
         <a href="{{url_for('index')}}" alt="band logo" class="top-logo-link">
-       <img src="{{url_for('static', filename='band-name-logo.jpg')}}" alt="Band logo" class="top-logo" />
-      </a>
+          <img src="{{url_for('static', filename='band-name-logo.jpg')}}" alt="Band logo" class="top-logo" />
+        </a>
+        <img src="{{url_for('static', filename='logo.png')}}" alt="logo" class="logo">
        </div>
     </header>
-    {% include 'includes/_navbar.html'%}
+      {% include 'includes/_navbar.html'%}
     <div>
-    {% block body %}
-    {% endblock %}
+      {% block body %}
+      {% endblock %}
     </div>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script> -->
+
   </body>
 </html>

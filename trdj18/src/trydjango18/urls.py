@@ -19,5 +19,6 @@ from newsletter import views as newsletter_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', newsletter_views.home)
+    url(r'^$', newsletter_views.home, name="home"),
+    url(r'^contact/$', newsletter_views.contact, name="contact"),
 ]
